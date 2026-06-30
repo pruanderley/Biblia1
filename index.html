@@ -1,0 +1,4459 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" id="meta-theme-color" content="#C8962D">
+<meta name="msapplication-navbutton-color" content="#C8962D">
+<meta name="apple-mobile-web-app-status-bar-style" content="#C8962D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Bíblia Sagrada JFA</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cinzel:wght@400;500;600;700&family=Lato:wght@300;400;700&family=Noto+Serif:ital,wght@0,400;0,500;0,700;1,400&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- ========================================================
+     ADICIONE O ARQUIVO DE DADOS AQUI:
+     Coloque o arquivo Biblia_data.js na mesma pasta que este HTML
+     ======================================================== -->
+<script src="Biblia_data.js"></script>
+
+<style>
+  :root {
+    --bg-primary:    #0d0a08;
+    --bg-secondary:  #161110;
+    --bg-card:       #1e1812;
+    --bg-panel:      #261f17;
+    --accent-gold:   #D4A528;
+    --accent-warm:   #F0C850;
+    --accent-red:    #A82525;
+    --accent-red2:   #D43838;
+    --text-primary:  #e6dbc8;
+    --text-secondary:#c4a06a;
+    --text-muted:    #886840;
+    --border:        #3a2e22;
+    --highlight-y:   rgba(255, 220, 60, 0.32);
+    --highlight-g:   rgba(40, 200, 100, 0.25);
+    --highlight-b:   rgba(60, 140, 255, 0.25);
+    --highlight-p:   rgba(160, 60, 220, 0.25);
+    --highlight-r:   rgba(255, 60, 60, 0.25);
+    --highlight-o:   rgba(255, 150, 40, 0.28);
+    --highlight-pk:  rgba(255, 100, 160, 0.25);
+    --highlight-tl:  rgba(40, 200, 190, 0.25);
+    --highlight-br:  rgba(180, 120, 60, 0.28);
+    --highlight-lm:  rgba(180, 220, 40, 0.28);
+    --radius:        10px;
+    --font-size:     18px;
+    --line-height:   1.8;
+    --verse-font:    'EB Garamond', Georgia, serif;
+    --transition:    0.25s ease;
+    --header-grad:   linear-gradient(135deg, #1a0f05 0%, #2a1a0a 40%, #1a0f05 100%);
+    --bottom-grad:   linear-gradient(180deg, transparent 0%, var(--bg-primary) 20%);
+    --glow-gold:     rgba(212, 165, 40, 0.35);
+  }
+
+  /* ── LIGHT THEME ── */
+  body.light {
+    --bg-primary:    #ffffff;
+    --bg-secondary:  #f5f5f5;
+    --bg-card:       #f0f0f0;
+    --bg-panel:      #eae4d8;
+    --accent-gold:   #9A7200;
+    --accent-warm:   #7A5800;
+    --accent-red:    #9A1818;
+    --accent-red2:   #C02020;
+    --text-primary:  #2a2218;
+    --text-secondary:#3a2a14;
+    --text-muted:    #8a7a68;
+    --border:        #c8bca8;
+    --highlight-y:   rgba(200, 160, 0, 0.25);
+    --highlight-g:   rgba(0, 140, 60, 0.20);
+    --highlight-b:   rgba(0, 80, 200, 0.18);
+    --highlight-p:   rgba(130, 0, 180, 0.18);
+    --highlight-r:   rgba(200, 0, 0, 0.18);
+    --highlight-o:   rgba(220, 100, 0, 0.22);
+    --highlight-pk:  rgba(220, 40, 120, 0.18);
+    --highlight-tl:  rgba(0, 160, 150, 0.20);
+    --highlight-br:  rgba(140, 80, 20, 0.20);
+    --highlight-lm:  rgba(120, 160, 0, 0.22);
+    --header-grad:   linear-gradient(135deg, #e8dcc8 0%, #f4ecda 50%, #e8dcc8 100%);
+    --bottom-grad:   linear-gradient(180deg, transparent 0%, #ffffff 20%);
+    --glow-gold:     rgba(154, 114, 0, 0.20);
+  }
+
+  /* Transições apenas nos elementos de UI */
+  #header, #nav-bar, #float-nav,
+  .icon-btn, .nav-select, #chapter-indicator, #chapter-nav button,
+  .float-arrow, .vm-btn, .toggle-switch, .toggle-switch::after,
+  .font-btn, .ch-cell, .hl-swatch,
+  .search-result, #toast, #verse-menu, #bottom-bar {
+    transition: background-color 0.25s ease, color 0.2s ease,
+                border-color 0.25s ease, transform 0.2s ease,
+                opacity 0.25s ease;
+  }
+  #header, #nav-bar { transition: transform 0.35s ease, opacity 0.35s ease !important; }
+  #verse-menu        { transition: transform 0.18s ease, opacity 0.18s ease !important; }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  html, body {
+    height: 100%;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: var(--font-size);
+    overflow: hidden;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  #app { display: block; height: 100vh; }
+
+  /* ── WEB SEARCH BUTTONS ── */
+  .ws-btn {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.2s ease, background 0.2s ease;
+    width: 100%;
+  }
+  .ws-btn:active, .ws-btn:hover {
+    border-color: var(--accent-gold);
+    background: rgba(212,165,40,0.07);
+  }
+  .ws-btn-title {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    color: var(--text-primary);
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  .ws-btn-sub {
+    font-family: 'Lato', sans-serif;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  #float-nav {
+    position: fixed;
+    bottom: 36px;
+    left: 0; right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 4px;
+    pointer-events: none;
+    z-index: 45;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  #float-nav.arrows-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: none; /* o pai não intercepta — só os botões */
+  }
+  /* No final: desce para não cobrir o último verso */
+  #float-nav.arrows-bottom {
+    bottom: 8px;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .float-arrow {
+    pointer-events: all;
+    width: 40px; height: 62px;
+    background: rgba(var(--bg-card-rgb, 30,24,18), 0.82);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    font-size: 22px;
+    font-weight: 700;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+  body.light .float-arrow { color: #111; }
+  .float-arrow:active {
+    background: var(--accent-gold);
+    color: #000;
+    transform: scale(0.94);
+  }
+
+  .header-actions { display: flex; gap: 4px; align-items: center; }
+
+  .menu-item-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 11px 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    color: var(--text-secondary);
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-align: left;
+    transition: color 0.2s ease, padding-left 0.2s ease, background 0.2s ease;
+    position: relative;
+  }
+  .menu-item-btn::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 20%; bottom: 20%;
+    width: 0; background: var(--accent-gold);
+    border-radius: 0 3px 3px 0;
+    transition: width 0.2s ease;
+  }
+  .menu-item-btn:active, .menu-item-btn:hover {
+    color: var(--accent-gold);
+    padding-left: 22px;
+    background: rgba(212,165,40,0.04);
+  }
+  .menu-item-btn:active::before, .menu-item-btn:hover::before { width: 3px; }
+  .menu-item-btn:last-child { border-bottom: none; }
+  .menu-item-btn span:first-child { font-size: 17px; flex-shrink: 0; opacity: 0.75; }
+  .menu-item-btn:hover span:first-child { opacity: 1; }
+
+  /* ── STATUS BAR COLOR SWATCHES ── */
+  .statusbar-colors {
+    display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 0 8px;
+  }
+  .sb-color-btn {
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer; outline: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    position: relative;
+  }
+  .sb-color-btn:hover { transform: scale(1.12); box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+  .sb-color-btn.active {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 3px rgba(212,165,40,0.35), 0 2px 8px rgba(0,0,0,0.2);
+    transform: scale(1.08);
+  }
+  .sb-color-btn.active::after {
+    content: '✓';
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: rgba(0,0,0,0.5);
+    font-weight: bold;
+  }
+
+  .icon-btn {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    font-size: 17px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all var(--transition);
+    flex-shrink: 0;
+  }
+  .icon-btn:hover, .icon-btn.active {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+    background: rgba(212,165,40,0.1);
+    transform: scale(1.08);
+  }
+
+  #nav-bar {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 99;
+    transition: transform 0.35s ease, opacity 0.35s ease !important;
+  }
+
+  .nav-select {
+    flex: 1;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    font-family: 'EB Garamond', serif;
+    font-size: 15px;
+    padding: 6px 10px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: border-color var(--transition);
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9a84c' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+  }
+  .nav-select:focus { outline: none; border-color: var(--accent-gold); }
+
+  #chapter-nav {
+    display: flex; align-items: center; gap: 6px;
+    flex-shrink: 0;
+  }
+  #chapter-nav button {
+    width: 32px; height: 32px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--accent-gold);
+    font-size: 18px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all var(--transition);
+    display: flex; align-items: center; justify-content: center;
+  }
+  #chapter-nav button:hover {
+    background: var(--accent-gold);
+    color: var(--bg-primary);
+    transform: scale(1.08);
+  }
+  #chapter-indicator {
+    font-family: 'Cinzel', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent-gold);
+    min-width: 38px;
+    text-align: center;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  #chapter-indicator:hover { border-color: var(--accent-gold); }
+
+  #content {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 56px 16px 90px;
+    scroll-behavior: smooth;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .book-chapter-title {
+    font-family: 'Cinzel', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--accent-gold);
+    text-align: center;
+    letter-spacing: 3px;
+    margin-bottom: 6px;
+    text-shadow: 0 0 30px rgba(212,165,40,0.3);
+  }
+  .chapter-title {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--text-muted);
+    text-align: center;
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── TÍTULOS DE SEÇÃO (perícopes) ── */
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 1.5px;
+    text-align: center;
+    margin: 18px 0 6px;
+    padding: 7px 16px 0;
+    border-top: 1px solid var(--border);
+    opacity: 0.85;
+  }
+
+  .verse {
+    display: flex;
+    gap: 10px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    cursor: pointer;
+    transition: background var(--transition);
+    position: relative;
+    line-height: 1.75;
+  }
+  .verse:hover { background: rgba(255,255,255,0.03); }
+  .verse.selected { background: rgba(212,165,40,0.08); outline: 1px solid rgba(212,165,40,0.2); }
+
+  .verse-num {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    color: var(--accent-gold);
+    font-weight: 600;
+    min-width: 22px;
+    text-align: right;
+    padding-top: 4px;
+    flex-shrink: 0;
+    opacity: 0.8;
+  }
+  .verse-text {
+    flex: 1;
+    font-size: var(--font-size);
+    font-family: var(--verse-font);
+    font-weight: 400;
+    color: var(--text-primary);
+    line-height: var(--line-height);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .hl-yellow { background: var(--highlight-y)  !important; border-left: 3px solid #f5d040; }
+  .hl-green  { background: var(--highlight-g)  !important; border-left: 3px solid #4cc878; }
+  .hl-blue   { background: var(--highlight-b)  !important; border-left: 3px solid #6ab0f5; }
+  .hl-purple { background: var(--highlight-p)  !important; border-left: 3px solid #b06cd8; }
+  .hl-red    { background: var(--highlight-r)  !important; border-left: 3px solid #f06060; }
+  .hl-orange { background: var(--highlight-o)  !important; border-left: 3px solid #f5a040; }
+  .hl-pink   { background: var(--highlight-pk) !important; border-left: 3px solid #f070a8; }
+  .hl-teal   { background: var(--highlight-tl) !important; border-left: 3px solid #40c8c0; }
+  .hl-brown  { background: var(--highlight-br) !important; border-left: 3px solid #c08040; }
+  .hl-lime   { background: var(--highlight-lm) !important; border-left: 3px solid #a8d840; }
+
+  #verse-menu {
+    position: fixed;
+    z-index: 150;
+    background: var(--bg-panel);
+    border: 1px solid var(--accent-gold);
+    border-radius: 16px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    box-shadow: 0 6px 30px rgba(0,0,0,0.55);
+    overflow: hidden;
+    width: min(300px, calc(100vw - 24px));
+    transform: scale(0.75) translateX(-50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    transform-origin: center bottom;
+    left: 50%;
+    bottom: 20px;
+  }
+  #verse-menu.visible {
+    transform: scale(1) translateX(-50%);
+    opacity: 1;
+    pointer-events: all;
+  }
+  .vm-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 12px 8px 10px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-family: 'Lato', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    border: none;
+    background: none;
+    transition: background 0.15s ease, color 0.15s ease;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .vm-btn:nth-child(3n) { border-right: none; }
+  .vm-btn:nth-last-child(-n+3) { border-bottom: none; }
+  .vm-btn .vi { font-size: 20px; line-height: 1; }
+  .vm-btn:active, .vm-btn:hover {
+    background: rgba(212,165,40,0.12);
+    color: var(--accent-gold);
+  }
+
+  .panel-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    display: none;
+    backdrop-filter: blur(4px);
+  }
+  .panel-overlay.open { display: flex; align-items: flex-end; }
+
+  .panel {
+    width: 100%;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--accent-gold);
+    border-radius: 20px 20px 0 0;
+    padding: 0 0 30px;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+  }
+
+  .panel.panel-flex {
+    display: flex;
+    flex-direction: column;
+    height: 85vh;
+    max-height: 85vh;
+    overflow: hidden;
+    padding: 0;
+  }
+  .panel.panel-flex .panel-scroll {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 16px 20px;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+
+  .panel-handle {
+    width: 40px; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 12px auto 16px;
+  }
+  .panel-title {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    color: var(--accent-gold);
+    letter-spacing: 2px;
+    text-align: center;
+    margin-bottom: 16px;
+    padding: 0 20px;
+  }
+  .panel-close {
+    position: absolute;
+    top: 12px; right: 16px;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all var(--transition);
+  }
+  .panel-close:hover { color: var(--accent-gold); border-color: var(--accent-gold); }
+
+  /* ── VOICE PANEL PROFISSIONAL ── */
+  .voice-panel .panel {
+    padding: 0 0 20px 0 !important;
+    background: var(--bg-secondary);
+    border-radius: 24px 24px 0 0;
+  }
+
+  .voice-container {
+    padding: 0 20px 16px;
+  }
+
+  .voice-title-icon {
+    font-size: 18px;
+    margin-right: 6px;
+  }
+
+  .voice-chapter-card {
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-panel) 100%);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .voice-chapter-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-red), var(--accent-gold), var(--accent-red));
+  }
+
+  .voice-chapter-book {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent-gold);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .voice-chapter-detail {
+    font-family: 'EB Garamond', serif;
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+  }
+
+  .voice-main-controls {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .voice-speed-control,
+  .voice-pitch-control {
+    flex: 1;
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 12px;
+    border: 1px solid var(--border);
+  }
+
+  .voice-control-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .voice-label {
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .voice-value {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent-gold);
+  }
+
+  .voice-slider {
+    width: 100%;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .voice-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent-gold);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    transition: transform 0.2s ease;
+  }
+
+  .voice-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+  }
+
+  .voice-main-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent-red) 0%, #b52b2b 100%);
+    border: none;
+    border-radius: 60px;
+    padding: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(139,32,32,0.3);
+    margin-bottom: 20px;
+  }
+
+  .voice-main-btn.playing {
+    background: linear-gradient(135deg, #1e6b2e 0%, #0f4a1a 100%);
+    box-shadow: 0 4px 15px rgba(30,107,46,0.3);
+  }
+
+  .voice-main-btn:active {
+    transform: scale(0.98);
+  }
+
+  .voice-btn-icon {
+    width: 28px;
+    height: 28px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: white;
+  }
+
+  .voice-btn-label {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: white;
+  }
+
+  .voice-status {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 10px 16px;
+    text-align: center;
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+  }
+
+  .voice-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4caf50;
+    display: inline-block;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .voice-diag-mini {
+    width: 100%;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px;
+    font-family: 'Lato', sans-serif;
+    font-size: 11px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .voice-diag-mini:hover {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+  }
+
+  .voice-diag-mini:active {
+    transform: scale(0.98);
+  }
+
+  @media (max-width: 480px) {
+    .voice-main-controls {
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .voice-chapter-card {
+      padding: 12px;
+    }
+    
+    .voice-chapter-book {
+      font-size: 14px;
+    }
+    
+    .voice-main-btn {
+      padding: 14px;
+    }
+    
+    .voice-btn-label {
+      font-size: 12px;
+    }
+  }
+
+  /* ── SEARCH PANEL ── */
+  #search-panel .panel { position: relative; }
+  #search-panel .panel.panel-flex {
+    display: flex;
+    flex-direction: column;
+    height: 85vh;
+    max-height: 85vh;
+    overflow: hidden;
+    padding: 0;
+  }
+  #search-panel .panel-header-fixed {
+    flex-shrink: 0;
+    padding: 0 16px;
+  }
+  #search-results {
+    flex: 1;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    padding: 0 16px 40px;
+    min-height: 0;
+  }
+  .search-box {
+    margin: 0 16px 16px;
+    display: flex; gap: 8px;
+  }
+  #search-input {
+    flex: 1;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    font-family: 'EB Garamond', serif;
+    font-size: 16px;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+  }
+  #search-input:focus { outline: none; border-color: var(--accent-gold); }
+  #search-btn {
+    background: var(--accent-red);
+    border: none;
+    color: white;
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    font-size: 18px;
+    cursor: pointer;
+    transition: background var(--transition);
+  }
+  #search-btn:hover { background: var(--accent-red2); }
+
+  #search-results { padding: 0 16px; }
+  .search-result {
+    padding: 12px;
+    margin-bottom: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: border-color var(--transition);
+  }
+  .search-result:hover { border-color: var(--accent-gold); }
+  .search-result-ref {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    color: var(--accent-gold);
+    margin-bottom: 4px;
+  }
+  .search-result-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .search-result-text mark {
+    background: rgba(212,165,40,0.3);
+    color: var(--accent-warm);
+    border-radius: 2px;
+    padding: 0 2px;
+  }
+  #search-count {
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .sf-btn {
+    padding: 5px 12px; border-radius: 20px;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--text-muted); font-family: 'Lato', sans-serif;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+    cursor: pointer; white-space: nowrap; flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+  .sf-btn.active { background: var(--accent-gold); border-color: var(--accent-gold); color: var(--bg-primary); }
+
+  /* ── HIGHLIGHT PANEL ── */
+  .hl-colors {
+    display: flex;
+    gap: 12px;
+    padding: 4px 16px 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .hl-colors::-webkit-scrollbar { display: none; }
+  .hl-swatch {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid transparent;
+    flex-shrink: 0;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .hl-swatch:active { transform: scale(0.92); }
+  .hl-swatch:hover  { transform: scale(1.12); box-shadow: 0 4px 14px rgba(0,0,0,0.28); }
+  .hl-swatch.active {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 3px rgba(212,165,40,0.4);
+    transform: scale(1.10);
+  }
+  .hl-swatch[data-color="yellow"] { background: #f5d040; }
+  .hl-swatch[data-color="red"]    { background: #f06060; }
+  .hl-swatch[data-color="green"]  { background: #4cc878; }
+  .hl-swatch[data-color="blue"]   { background: #6ab0f5; }
+  .hl-swatch[data-color="orange"] { background: #f5a040; }
+  .hl-swatch[data-color="pink"]   { background: #f070a8; }
+  .hl-swatch[data-color="purple"] { background: #b06cd8; }
+  .hl-swatch[data-color="teal"]   { background: #40c8c0; }
+  .hl-swatch[data-color="brown"]  { background: #c08040; }
+  .hl-swatch[data-color="lime"]   { background: #a8d840; }
+  .hl-swatch[data-color="none"]   {
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    position: relative;
+  }
+  .hl-swatch[data-color="none"]::before,
+  .hl-swatch[data-color="none"]::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 60%; height: 2px;
+    background: var(--text-muted);
+    border-radius: 1px;
+  }
+  .hl-swatch[data-color="none"]::before { transform: translate(-50%,-50%) rotate(45deg); }
+  .hl-swatch[data-color="none"]::after  { transform: translate(-50%,-50%) rotate(-45deg); }
+
+  .hl-panel-info {
+    font-family: 'Lato', sans-serif;
+    font-size: 13px;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 0 16px 8px;
+  }
+
+  /* ── SETTINGS PANEL ── */
+  .settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .settings-label {
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  .font-controls { display: flex; gap: 8px; align-items: center; }
+  .font-btn {
+    width: 36px; height: 36px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--accent-gold);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all var(--transition);
+  }
+  .font-btn:hover { background: rgba(212,165,40,0.15); }
+  #font-size-display {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--accent-gold);
+    min-width: 36px;
+    text-align: center;
+  }
+
+  .toggle-switch {
+    width: 50px; height: 26px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    position: relative;
+    cursor: pointer;
+    transition: background var(--transition);
+  }
+  .toggle-switch.on { background: var(--accent-red); border-color: var(--accent-red); }
+  .toggle-switch::after {
+    content: '';
+    width: 20px; height: 20px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px; left: 3px;
+    transition: left var(--transition);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  }
+  .toggle-switch.on::after { left: 26px; }
+
+  .font-choice {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    padding: 7px 13px;
+    cursor: pointer;
+    flex: 1;
+    text-align: center;
+  }
+  .font-choice.active {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+    background: rgba(212,165,40,0.1);
+  }
+  #chapter-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    padding: 0 16px 16px;
+  }
+
+  #verse-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    padding: 0 16px 16px;
+  }
+  .vs-cell {
+    aspect-ratio: 1;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+  .vs-cell:active { border-color: var(--accent-gold); color: var(--accent-gold); }
+  .ch-cell {
+    aspect-ratio: 1;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+  .ch-cell:hover, .ch-cell.current {
+    background: var(--accent-gold);
+    color: var(--bg-primary);
+    border-color: var(--accent-gold);
+    transform: scale(1.08);
+  }
+
+  /* ── CREDITS MODAL ── */
+  #credits-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(6px);
+  }
+  #credits-modal.open { display: flex; }
+  .credits-card {
+    background: linear-gradient(145deg, #1a1008, #261a0e, #1a1008);
+    border: 1px solid var(--accent-gold);
+    border-radius: 20px;
+    padding: 40px 32px;
+    text-align: center;
+    max-width: 320px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 40px rgba(212,165,40,0.1);
+    animation: fadeScale 0.35s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .credits-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(ellipse at center, rgba(212,165,40,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  @keyframes fadeScale {
+    from { opacity:0; transform: scale(0.8); }
+    to   { opacity:1; transform: scale(1); }
+  }
+  .credits-cross {
+    font-size: 50px;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 0 20px rgba(212,165,40,0.6));
+  }
+  .credits-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+  }
+  .credits-divider {
+    width: 60px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+    margin: 0 auto 20px;
+  }
+  .credits-produced {
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  .credits-name {
+    font-family: 'Cinzel', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--accent-warm);
+    letter-spacing: 2px;
+    text-shadow: 0 0 30px rgba(232,201,122,0.5);
+    margin-bottom: 4px;
+  }
+  .credits-sub {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+  .credits-verse {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 24px;
+    background: rgba(255,255,255,0.02);
+  }
+  .credits-version {
+    font-family: 'Lato', sans-serif;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .credits-close-btn {
+    background: var(--accent-red);
+    border: none;
+    color: white;
+    padding: 10px 32px;
+    border-radius: 30px;
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background var(--transition);
+  }
+  .credits-close-btn:hover { background: var(--accent-red2); }
+
+  #toast {
+    position: fixed;
+    bottom: 90px; left: 50%; transform: translateX(-50%);
+    background: var(--bg-card);
+    border: 1px solid var(--accent-gold);
+    color: var(--accent-warm);
+    font-family: 'Lato', sans-serif;
+    font-size: 13px;
+    padding: 8px 20px;
+    border-radius: 30px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  #toast.show { opacity: 1; }
+
+  #loading {
+    position: fixed; inset: 0;
+    background: var(--bg-primary);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 9999;
+    gap: 20px;
+  }
+  #loading.hidden { display: none; }
+  .loading-cross {
+    font-size: 60px;
+    animation: pulse 1.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px var(--glow-gold));
+  }
+  .loading-text {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--accent-gold);
+    letter-spacing: 4px;
+    text-shadow: 0 0 16px var(--glow-gold);
+  }
+  .loading-bar {
+    width: 200px; height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+  .loading-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-red), var(--accent-gold));
+    animation: loadFill 1.8s ease-in-out infinite;
+    border-radius: 1px;
+  }
+  @keyframes loadFill {
+    0%   { width: 0%; }
+    60%  { width: 100%; }
+    100% { width: 100%; }
+  }
+
+  .verse-note-icon {
+    font-size: 12px;
+    color: var(--accent-gold);
+    margin-left: 6px;
+    cursor: pointer;
+    opacity: 0.75;
+    vertical-align: middle;
+  }
+  .verse-note-preview {
+    display: block;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--text-muted);
+    margin-top: 4px;
+    padding: 4px 8px;
+    border-left: 2px solid var(--accent-gold);
+    background: rgba(212,165,40,0.07);
+    border-radius: 0 6px 6px 0;
+  }
+
+  #note-panel .panel { padding-bottom: 20px; }
+  #note-textarea {
+    width: 100%;
+    min-height: 120px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-primary);
+    font-family: var(--verse-font);
+    font-size: 16px;
+    padding: 12px;
+    resize: vertical;
+    margin-top: 10px;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+  #note-textarea:focus { border-color: var(--accent-gold); }
+  .note-ref-label {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--accent-gold);
+    margin-top: 10px;
+    display: block;
+  }
+  .note-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .note-save-btn {
+    flex: 1;
+    padding: 12px;
+    background: var(--accent-gold);
+    color: var(--bg-primary);
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: opacity 0.2s ease;
+  }
+  .note-save-btn:active { opacity: 0.8; }
+  .note-del-btn {
+    padding: 12px 18px;
+    background: var(--accent-red);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 18px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+  .note-del-btn:active { opacity: 0.8; }
+
+  .fav-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+  }
+  .fav-item:active { border-color: var(--accent-gold); }
+  .fav-item-ref {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--accent-gold);
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .fav-item-ref .fav-del {
+    color: var(--accent-red2);
+    font-size: 16px;
+    padding: 0 4px;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+  .fav-item-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .fav-empty {
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+    padding: 30px 0;
+    font-size: 15px;
+  }
+
+  .hist-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: border-color 0.2s ease;
+  }
+  .hist-item:active { border-color: var(--accent-gold); }
+  .hist-icon { font-size: 20px; flex-shrink: 0; }
+  .hist-info { flex: 1; }
+  .hist-book {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    color: var(--accent-gold);
+  }
+  .hist-time {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .hist-clear-btn {
+    width: 100%;
+    padding: 10px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: var(--radius);
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.2s ease;
+  }
+  .hist-clear-btn:active { border-color: var(--accent-red2); color: var(--accent-red2); }
+
+  .plan-header {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  .plan-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--bg-panel);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 10px 0 6px;
+  }
+  .plan-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-red), var(--accent-gold));
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+  .plan-stats {
+    font-size: 13px;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+  }
+  .plan-day-title {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    color: var(--accent-gold);
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+  .plan-reading-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 11px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+  }
+  .plan-reading-item.done {
+    border-color: rgba(80,200,120,0.4);
+    background: rgba(80,200,120,0.06);
+  }
+  .plan-reading-item:active { border-color: var(--accent-gold); }
+  .plan-check {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+  .plan-reading-item.done .plan-check {
+    border-color: #50c878;
+    background: rgba(80,200,120,0.2);
+    color: #50c878;
+  }
+  .plan-reading-text {
+    flex: 1;
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    color: var(--text-primary);
+  }
+  .plan-reading-item.done .plan-reading-text {
+    color: var(--text-muted);
+    text-decoration: line-through;
+  }
+  .plan-nav-btns {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .plan-nav-btn {
+    flex: 1;
+    padding: 11px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    border-radius: var(--radius);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .plan-nav-btn.primary {
+    background: var(--accent-gold);
+    color: var(--bg-primary);
+    border-color: var(--accent-gold);
+    font-weight: 700;
+  }
+  .plan-nav-btn:active { opacity: 0.8; }
+  .plan-reset-btn {
+    width: 100%;
+    padding: 9px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: var(--radius);
+    font-size: 12px;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+
+  @media(max-width:360px) {
+    :root { --font-size: 16px; }
+    .header-logo { font-size: 13px; }
+    #chapter-grid { grid-template-columns: repeat(6,1fr); }
+  }
+
+  body.light #header::before {
+    background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+  }
+  body.light .credits-card {
+    background: linear-gradient(145deg, #e8d4a8, #f4e8c4, #e8d4a8);
+  }
+  body.light .credits-verse {
+    background: rgba(0,0,0,0.04);
+  }
+  body.light #loading {
+    background: var(--bg-primary);
+  }
+  body.light .panel {
+    background: var(--bg-secondary);
+  }
+  body.light .search-result {
+    background: var(--bg-card);
+  }
+
+  /* ── VERSÍCULO DO DIA ── */
+  #verse-day-overlay {
+    position: fixed; inset: 0; z-index: 10000;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    animation: vdFadeIn 0.3s ease;
+  }
+  @keyframes vdFadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes vdSlideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  #verse-day-card {
+    background: linear-gradient(145deg, #1a1208 0%, #2a1c0e 50%, #1a1208 100%);
+    border: 1.5px solid var(--accent-gold);
+    border-radius: 16px;
+    padding: 32px 24px;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 0 60px rgba(212,165,40,0.15), 0 20px 60px rgba(0,0,0,0.5);
+    animation: vdSlideUp 0.4s ease 0.1s both;
+  }
+  body.light #verse-day-card {
+    background: linear-gradient(145deg, #f8f0dc, #fff8e8, #f8f0dc);
+  }
+  .vd-close {
+    position: absolute; top: 12px; right: 14px;
+    font-size: 18px; color: var(--text-muted);
+    cursor: pointer; line-height: 1;
+  }
+  .vd-label {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--accent-gold);
+    margin-bottom: 18px;
+    text-shadow: 0 0 20px var(--glow-gold);
+  }
+  .vd-text {
+    font-family: 'EB Garamond', serif;
+    font-size: 19px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+    font-style: italic;
+  }
+  .vd-ref {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    color: var(--accent-warm);
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+  }
+  .vd-share-btn {
+    background: #ffffff;
+    color: #111111;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .vd-share-btn:active { transform: scale(0.96); opacity: 0.85; }
+
+  /* ── IMPROVED VERSE STYLING ── */
+  #content .verse-line {
+    border-left: 2px solid transparent;
+    padding-left: 8px;
+    margin-left: -10px;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  #content .verse-line:active {
+    border-left-color: var(--accent-gold);
+  }
+
+  /* ── FLOATING ARROWS VIVID ── */
+  .float-arrow:active {
+    background: var(--accent-gold);
+    color: var(--bg-primary);
+    opacity: 1;
+    transform: scale(0.94);
+    box-shadow: 0 0 16px var(--glow-gold);
+  }
+
+  /* ── MENU ITEM HOVER VIVID ── */
+  .menu-item-btn:active::before, .menu-item-btn:hover::before { width: 3px; background: var(--accent-gold); }
+
+  /* ── SCROLL INDICATOR ── */
+  #reading-progress {
+    position: fixed; top: 0; left: 0;
+    height: 2px; width: 0%;
+    background: linear-gradient(90deg, var(--accent-gold), var(--accent-warm));
+    z-index: 101;
+    transition: width 0.15s ease;
+    box-shadow: 0 0 8px var(--glow-gold);
+  }
+
+  /* ── VERSO SENDO LIDO PELO TTS ── */
+  .verse.tts-reading {
+    background: rgba(212,165,40,0.13) !important;
+    border-left: 3px solid var(--accent-gold) !important;
+    border-radius: 6px;
+  }
+  @keyframes voicePulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(212,165,40,0.4); }
+    50% { box-shadow: 0 0 0 10px rgba(212,165,40,0); }
+  }
+  .voice-main-btn.playing {
+    animation: voicePulse 1.8s ease infinite;
+  }
+
+  /* ── CAPÍTULOS LIDOS ── */
+  .ch-cell.read {
+    background: rgba(212,165,40,0.15);
+    border-color: var(--accent-gold);
+    position: relative;
+  }
+  .ch-cell.read::after {
+    content: '✓';
+    position: absolute;
+    top: 2px; right: 4px;
+    font-size: 8px;
+    color: var(--accent-gold);
+    font-weight: 700;
+  }
+  #chapter-progress {
+    text-align: center;
+    font-family: 'Lato', sans-serif;
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 8px 16px 4px;
+    letter-spacing: 0.5px;
+  }
+  .progress-bar-wrap {
+    width: 100%;
+    height: 4px;
+    background: var(--bg-card);
+    border-radius: 2px;
+    margin: 6px 16px 10px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-gold), var(--accent-warm));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+
+</style>
+</head>
+<body>
+
+<!-- VERSÍCULO DO DIA -->
+<div id="verse-day-overlay" style="display:none;">
+  <div id="verse-day-card">
+    <div class="vd-close" onclick="closeVerseDay()">✕</div>
+    <div class="vd-label">✝ VERSÍCULO DO DIA</div>
+    <div class="vd-text" id="vd-text"></div>
+    <div class="vd-ref" id="vd-ref"></div>
+    <button class="vd-share-btn" onclick="copyVerseDay()">📋 Copiar</button>
+    <button class="vd-share-btn" style="background:rgba(37,211,102,0.15);border-color:#25d166;color:#25d166;" onclick="shareVerseDay()">↗ WhatsApp</button>
+  </div>
+</div>
+
+<div id="loading">
+  <div class="loading-cross">✝</div>
+  <div class="loading-text">BÍBLIA SAGRADA</div>
+  <div class="loading-bar"><div class="loading-fill"></div></div>
+</div>
+
+<div id="app">
+  <div id="reading-progress"></div>
+
+  <div id="nav-bar">
+    <button class="icon-btn" onclick="openMenu()" id="menu-btn" title="Menu">☰</button>
+    <select id="book-select" class="nav-select" onchange="onBookChange()"></select>
+    <div id="chapter-nav">
+      <div id="chapter-indicator" onclick="openChapterPicker()">1</div>
+      <button onclick="nextChapter()">›</button>
+    </div>
+  </div>
+
+  <div id="content"></div>
+
+  <div id="float-nav">
+    <button class="float-arrow" onclick="prevChapter()" title="Capítulo anterior">‹</button>
+    <button class="float-arrow" onclick="nextChapter()" title="Próximo capítulo">›</button>
+  </div>
+
+  <div id="verse-menu">
+    <button class="vm-btn" onclick="vmHighlight()"><span class="vi">🖊</span><span>Marcar</span></button>
+    <button class="vm-btn" onclick="vmNote()"><span class="vi">📝</span><span>Anotar</span></button>
+    <button class="vm-btn" onclick="vmCopy()"><span class="vi">📋</span><span>Copiar</span></button>
+    <button class="vm-btn" onclick="vmShare()"><span class="vi">↗</span><span>Compartilhar</span></button>
+    <button class="vm-btn" onclick="vmCrossRef()"><span class="vi">🔗</span><span>Referências</span></button>
+    <button class="vm-btn" onclick="vmSearch()"><span class="vi">🔎</span><span>Pesquisar</span></button>
+    <button class="vm-btn" onclick="vmGoogleAI()"><span class="vi">✨</span><span>Google IA</span></button>
+  </div>
+</div>
+
+<div id="menu-panel" class="panel-overlay" onclick="closePanelIfOutside(event,'menu-panel')">
+  <div class="panel" style="position:relative; padding-bottom:20px;">
+    <div class="panel-handle"></div>
+    <div class="panel-title">✝ MENU</div>
+    <button class="panel-close" onclick="closePanel('menu-panel')">✕</button>
+    <div style="padding:0 0 0 0; margin-top:4px;">
+      <div id="menu-progress-bar" style="margin:0 20px 10px;padding:8px 12px;background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border);font-family:'Lato',sans-serif;font-size:11px;color:var(--text-muted);letter-spacing:0.5px;">
+        📖 <span id="menu-progress-text">Carregando...</span>
+        <div style="margin-top:5px;height:3px;background:var(--border);border-radius:2px;overflow:hidden;">
+          <div id="menu-progress-fill" style="height:100%;background:linear-gradient(90deg,var(--accent-gold),var(--accent-warm));border-radius:2px;width:0%;transition:width 0.5s ease;"></div>
+        </div>
+      </div>
+      <button class="menu-item-btn" style="padding-left:20px;" onclick="closePanel('menu-panel');toggleTheme()"><span>🌙</span><span id="menu-theme-label">Tema Escuro / Claro</span></button>
+      <button class="menu-item-btn" style="padding-left:20px;" onclick="closePanel('menu-panel');setTimeout(openSearch,180)"><span>🔍</span><span>Pesquisar</span></button>
+      <button class="menu-item-btn" style="padding-left:20px;" onclick="closePanel('menu-panel');setTimeout(showVerseDay,180)"><span>✨</span><span>Versículo do Dia</span></button>
+      <button class="menu-item-btn" style="padding-left:20px;" onclick="closePanel('menu-panel');setTimeout(openVoice,180)"><span>🔊</span><span>Leitura em Voz</span></button>
+      <button class="menu-item-btn" style="padding-left:20px;" onclick="closePanel('menu-panel');setTimeout(openHistory,180)"><span>📖</span><span>Histórico</span></button>
+      <button class="menu-item-btn" style="padding-left:20px;" onclick="closePanel('menu-panel');setTimeout(openPlan,180)"><span>📅</span><span>Plano de Leitura</span></button>
+      <button class="menu-item-btn" style="padding-left:20px;" onclick="closePanel('menu-panel');setTimeout(openSettings,180)"><span>⚙️</span><span>Configurações</span></button>
+      <button class="menu-item-btn" style="padding-left:20px;" onclick="closePanel('menu-panel');setTimeout(openCredits,180)"><span>✝</span><span>Sobre</span></button>
+    </div>
+  </div>
+</div>
+
+<div id="search-panel" class="panel-overlay" onclick="closePanelIfOutside(event,'search-panel')">
+  <div class="panel panel-flex" style="position:relative;">
+    <div class="panel-header-fixed">
+      <div class="panel-handle"></div>
+      <div class="panel-title">🔍 PESQUISAR NA BÍBLIA</div>
+      <button class="panel-close" onclick="closePanel('search-panel')">✕</button>
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Digite uma palavra ou versículo..." oninput="doSearch()" />
+        <button id="search-btn" onclick="doSearch()">🔍</button>
+      </div>
+      <div id="search-filters" style="display:flex;gap:6px;padding:0 16px 6px;overflow-x:auto;-webkit-overflow-scrolling:touch;">
+        <button class="sf-btn active" data-scope="all"   onclick="setSearchScope('all')">Toda a Bíblia</button>
+        <button class="sf-btn"        data-scope="ot"    onclick="setSearchScope('ot')">Antigo Test.</button>
+        <button class="sf-btn"        data-scope="nt"    onclick="setSearchScope('nt')">Novo Test.</button>
+        <button class="sf-btn"        data-scope="book"  onclick="setSearchScope('book')" id="sf-book-btn">Este Livro</button>
+      </div>
+      <div id="search-count"></div>
+    </div>
+    <div id="search-results"></div>
+  </div>
+</div>
+
+<div id="highlight-panel" class="panel-overlay" onclick="closePanelIfOutside(event,'highlight-panel')">
+  <div class="panel" style="position:relative">
+    <div class="panel-handle"></div>
+    <div class="panel-title">🖊 MARCA-TEXTO</div>
+    <button class="panel-close" onclick="closePanel('highlight-panel')">✕</button>
+    <div class="hl-panel-info">Selecione um versículo e escolha a cor</div>
+    <div class="hl-colors">
+      <div class="hl-swatch" data-color="none"   onclick="applyHighlight('none')"   title="Remover"></div>
+      <div class="hl-swatch" data-color="yellow" onclick="applyHighlight('yellow')" title="Amarelo"></div>
+      <div class="hl-swatch" data-color="red"    onclick="applyHighlight('red')"    title="Vermelho"></div>
+      <div class="hl-swatch" data-color="green"  onclick="applyHighlight('green')"  title="Verde"></div>
+      <div class="hl-swatch" data-color="blue"   onclick="applyHighlight('blue')"   title="Azul"></div>
+      <div class="hl-swatch" data-color="orange" onclick="applyHighlight('orange')" title="Laranja"></div>
+      <div class="hl-swatch" data-color="pink"   onclick="applyHighlight('pink')"   title="Rosa"></div>
+      <div class="hl-swatch" data-color="purple" onclick="applyHighlight('purple')" title="Roxo"></div>
+      <div class="hl-swatch" data-color="teal"   onclick="applyHighlight('teal')"   title="Teal"></div>
+      <div class="hl-swatch" data-color="brown"  onclick="applyHighlight('brown')"  title="Marrom"></div>
+      <div class="hl-swatch" data-color="lime"   onclick="applyHighlight('lime')"   title="Lima"></div>
+    </div>
+  </div>
+</div>
+
+<!-- VOICE PANEL PROFISSIONAL -->
+<div id="voice-panel" class="panel-overlay" onclick="closePanelIfOutside(event,'voice-panel')">
+  <div class="panel voice-panel" style="position:relative">
+    <div class="panel-handle"></div>
+    <div class="panel-title">
+      <span class="voice-title-icon">🔊</span> 
+      LEITURA EM VOZ
+    </div>
+    <button class="panel-close" onclick="closePanel('voice-panel')">✕</button>
+    
+    <div class="voice-container">
+      <div class="voice-chapter-card" id="voice-chapter-info">
+        <div class="voice-chapter-book"></div>
+        <div class="voice-chapter-detail"></div>
+      </div>
+
+      <div class="voice-main-controls">
+        <div class="voice-speed-control">
+          <div class="voice-control-header">
+            <span class="voice-label">⚡ Velocidade</span>
+            <span class="voice-value" id="speed-val">0.9x</span>
+          </div>
+          <input type="range" class="voice-slider" id="speed-slider" min="0.5" max="2" step="0.1" value="0.9" oninput="updateVoiceControls()">
+        </div>
+
+        <div class="voice-pitch-control">
+          <div class="voice-control-header">
+            <span class="voice-label">🎵 Tom da Voz</span>
+            <span class="voice-value" id="pitch-val">1.0</span>
+          </div>
+          <input type="range" class="voice-slider" id="pitch-slider" min="0.5" max="2" step="0.1" value="1.0" oninput="updateVoiceControls()">
+        </div>
+      </div>
+
+      <button class="voice-main-btn" id="voice-btn" onclick="toggleVoice()">
+        <div class="voice-btn-icon" id="voice-icon">▶</div>
+        <div class="voice-btn-label" id="voice-label-btn">INICIAR LEITURA</div>
+      </button>
+
+      <div class="voice-status" id="voice-progress">
+        <span class="voice-status-dot"></span>
+        Pronto para leitura
+      </div>
+
+      <button class="voice-diag-mini" onclick="ttsdiag()">
+        <span>🔧</span> Diagnóstico
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="settings-panel" class="panel-overlay" onclick="closePanelIfOutside(event,'settings-panel')">
+  <div class="panel" style="position:relative">
+    <div class="panel-handle"></div>
+    <div class="panel-title">⚙️ CONFIGURAÇÕES</div>
+    <button class="panel-close" onclick="closePanel('settings-panel')">✕</button>
+    <div class="settings-row">
+      <span class="settings-label">☀️ Tema Claro</span>
+      <div class="toggle-switch" id="toggle-theme" onclick="toggleTheme()"></div>
+    </div>
+    <div class="settings-row">
+      <span class="settings-label">Tamanho da Fonte</span>
+      <div class="font-controls">
+        <button class="font-btn" onclick="changeFontSize(-1)">A-</button>
+        <span id="font-size-display">18px</span>
+        <button class="font-btn" onclick="changeFontSize(1)">A+</button>
+      </div>
+    </div>
+    <div class="settings-row">
+      <span class="settings-label">Espaçamento</span>
+      <div class="font-controls">
+        <button class="font-btn" onclick="changeSpacing(-0.1)">↑↓-</button>
+        <span id="spacing-display">1.8</span>
+        <button class="font-btn" onclick="changeSpacing(0.1)">↑↓+</button>
+      </div>
+    </div>
+    <div class="settings-row" style="flex-direction:column; align-items:flex-start; gap:10px;">
+      <span class="settings-label">Fonte de Leitura</span>
+      <div id="font-options" style="display:flex; flex-wrap:wrap; gap:8px; width:100%;">
+        <button class="font-choice active" data-font="garamond" onclick="changeFont('garamond')" style="font-family:'EB Garamond',serif;">Garamond</button>
+        <button class="font-choice" data-font="notoserif" onclick="changeFont('notoserif')" style="font-family:'Noto Serif',serif;">Noto Serif</button>
+        <button class="font-choice" data-font="times" onclick="changeFont('times')" style="font-family:'Times New Roman',Times,serif;">Times New Roman</button>
+        <button class="font-choice" data-font="lato" onclick="changeFont('lato')" style="font-family:'Lato',sans-serif;">Lato</button>
+        <button class="font-choice" data-font="georgia" onclick="changeFont('georgia')" style="font-family:Georgia,serif;">Georgia</button>
+        <button class="font-choice" data-font="palatino" onclick="changeFont('palatino')" style="font-family:Palatino,serif;">Palatino</button>
+        <button class="font-choice" data-font="serif" onclick="changeFont('serif')" style="font-family:serif;">Serif</button>
+        <button class="font-choice" data-font="cinzel" onclick="changeFont('cinzel')" style="font-family:'Cinzel',serif;">Cinzel</button>
+        <button class="font-choice" data-font="caveat" onclick="changeFont('caveat')" style="font-family:'Caveat',cursive;">✍ Manuscrita</button>
+      </div>
+    </div>
+    <div class="settings-row">
+      <span class="settings-label">Número dos versículos</span>
+      <div class="toggle-switch on" id="toggle-nums" onclick="toggleVerseNumbers()"></div>
+    </div>
+
+    <div class="settings-row" style="flex-direction:column; align-items:flex-start; gap:10px;">
+      <span class="settings-label">🎨 Cor da Barra Superior</span>
+      <span style="font-family:'Lato',sans-serif;font-size:11px;color:var(--text-muted);margin-top:-6px;">Cores vibrantes — ícones do sistema permanecem visíveis</span>
+      <div class="statusbar-colors" id="statusbar-colors">
+        <button class="sb-color-btn active" data-color="#C8962D" style="background:#C8962D" onclick="changeStatusBarColor('#C8962D')" title="Ouro Real"></button>
+        <button class="sb-color-btn" data-color="#E6B830" style="background:#E6B830" onclick="changeStatusBarColor('#E6B830')" title="Âmbar Brilhante"></button>
+        <button class="sb-color-btn" data-color="#2E8B57" style="background:#2E8B57" onclick="changeStatusBarColor('#2E8B57')" title="Esmeralda"></button>
+        <button class="sb-color-btn" data-color="#00897B" style="background:#00897B" onclick="changeStatusBarColor('#00897B')" title="Jade"></button>
+        <button class="sb-color-btn" data-color="#1E88E5" style="background:#1E88E5" onclick="changeStatusBarColor('#1E88E5')" title="Azul Royal"></button>
+        <button class="sb-color-btn" data-color="#8E24AA" style="background:#8E24AA" onclick="changeStatusBarColor('#8E24AA')" title="Púrpura"></button>
+        <button class="sb-color-btn" data-color="#D84315" style="background:#D84315" onclick="changeStatusBarColor('#D84315')" title="Terracota Vivo"></button>
+        <button class="sb-color-btn" data-color="#C62828" style="background:#C62828" onclick="changeStatusBarColor('#C62828')" title="Rubi"></button>
+        <button class="sb-color-btn" data-color="#4A148C" style="background:#4A148C" onclick="changeStatusBarColor('#4A148C')" title="Ametista"></button>
+        <button class="sb-color-btn" data-color="#1B3A2D" style="background:#1B3A2D" onclick="changeStatusBarColor('#1B3A2D')" title="Noturno"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ WEB SEARCH PANEL ══ -->
+<div id="websearch-panel" class="panel-overlay" onclick="closePanelIfOutside(event,'websearch-panel')">
+  <div class="panel" style="position:relative;padding-bottom:24px;">
+    <div class="panel-handle"></div>
+    <div class="panel-title">🌐 BUSCAR NA INTERNET</div>
+    <button class="panel-close" onclick="closePanel('websearch-panel')">✕</button>
+    <div style="padding:0 16px;">
+      <div id="ws-ref" style="font-family:'Cinzel',serif;font-size:12px;color:var(--accent-gold);letter-spacing:1.5px;margin-bottom:6px;"></div>
+      <div id="ws-verse" style="font-family:var(--verse-font);font-size:14px;color:var(--text-secondary);line-height:1.6;font-style:italic;padding:10px 14px;background:var(--bg-card);border-left:3px solid var(--accent-gold);border-radius:0 8px 8px 0;margin-bottom:16px;"></div>
+
+      <!-- Barra de busca customizável -->
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <input id="ws-input" type="text"
+          style="flex:1;padding:10px 12px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);font-family:'Lato',sans-serif;font-size:14px;color:var(--text-primary);"
+          placeholder="Refine sua busca..." />
+        <button onclick="wsGoogle()" style="padding:10px 14px;background:var(--accent-gold);border:none;border-radius:var(--radius);color:var(--bg-primary);font-size:18px;cursor:pointer;">🔍</button>
+      </div>
+
+      <!-- Botões de busca rápida -->
+      <div style="margin-top:4px;">
+        <button onclick="wsOpen('google-ai')" class="ws-btn" style="width:100%;border-color:rgba(66,133,244,0.5);background:rgba(66,133,244,0.08);padding:18px 16px;">
+          <span style="font-size:28px;">✨</span>
+          <div>
+            <div class="ws-btn-title" style="color:#4285F4;font-size:15px;">Google IA</div>
+            <div class="ws-btn-sub" style="font-size:12px;margin-top:3px;">Resposta com inteligência artificial</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="chapter-picker" class="panel-overlay" onclick="closePanelIfOutside(event,'chapter-picker')">
+  <div class="panel" style="position:relative">
+    <div class="panel-handle"></div>
+    <div class="panel-title" id="ch-picker-title">CAPÍTULOS</div>
+    <button class="panel-close" onclick="closePanel('chapter-picker')">✕</button>
+    <div id="chapter-progress"></div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="ch-progress-fill" style="width:0%"></div></div>
+    <div id="chapter-grid"></div>
+  </div>
+</div>
+
+<div id="verse-picker" class="panel-overlay" onclick="closePanelIfOutside(event,'verse-picker')">
+  <div class="panel" style="position:relative; max-height:80vh;">
+    <div class="panel-handle"></div>
+    <div class="panel-title" id="vs-picker-title">VERSÍCULOS</div>
+    <button class="panel-close" onclick="closePanel('verse-picker')">✕</button>
+    <div id="verse-grid" style="overflow-y:auto; max-height:60vh;"></div>
+  </div>
+</div>
+
+<!-- ══ CROSS-REFERENCE PANEL ══ -->
+<div id="crossref-panel" class="panel-overlay" onclick="closePanelIfOutside(event,'crossref-panel')">
+  <div class="panel panel-flex" style="position:relative;">
+    <div style="flex-shrink:0; padding:0 16px;">
+      <div class="panel-handle"></div>
+      <div class="panel-title">🔗 REFERÊNCIAS CRUZADAS</div>
+      <button class="panel-close" onclick="closePanel('crossref-panel')">✕</button>
+      <div id="crossref-source" style="font-family:'Cinzel',serif;font-size:12px;color:var(--accent-gold);letter-spacing:1px;padding:0 0 6px;"></div>
+      <div id="crossref-source-text" style="font-family:var(--verse-font);font-size:14px;color:var(--text-secondary);line-height:1.6;padding-bottom:12px;border-bottom:1px solid var(--border);margin-bottom:4px;font-style:italic;"></div>
+    </div>
+    <div id="crossref-list" class="panel-scroll"></div>
+  </div>
+</div>
+
+<div id="note-view-panel" class="panel-overlay" onclick="closePanelIfOutside(event,'note-view-panel')">
+  <div class="panel" style="position:relative">
+    <div class="panel-handle"></div>
+    <div class="panel-title">📝 ANOTAÇÃO</div>
+    <button class="panel-close" onclick="closePanel('note-view-panel')">✕</button>
+    <div style="padding:0 20px 10px">
+      <div id="note-view-ref" style="font-family:'Cinzel',serif;font-size:13px;color:var(--accent-gold);margin-bottom:12px;"></div>
+      <div id="note-view-text" style="font-family:var(--verse-font);font-size:16px;color:var(--text-primary);line-height:1.8;white-space:pre-wrap;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;"></div>
+      <button onclick="editNoteFromView()" style="width:100%;margin-top:14px;padding:12px;background:var(--accent-gold);color:var(--bg-primary);border:none;border-radius:var(--radius);font-family:'Cinzel',serif;font-weight:700;font-size:14px;cursor:pointer;letter-spacing:1px;">✏️ EDITAR ANOTAÇÃO</button>
+    </div>
+  </div>
+</div>
+
+<div id="note-panel" class="panel-overlay" onclick="closePanelIfOutside(event,'note-panel')">
+  <div class="panel" style="position:relative">
+    <div class="panel-handle"></div>
+    <div class="panel-title">📝 ANOTAÇÃO</div>
+    <button class="panel-close" onclick="closePanel('note-panel')">✕</button>
+    <span class="note-ref-label" id="note-ref-label">—</span>
+    <textarea id="note-textarea" placeholder="Escreva sua anotação ou reflexão..."></textarea>
+    <div class="note-actions">
+      <button class="note-del-btn" onclick="deleteNote()" title="Excluir anotação">🗑</button>
+      <button class="note-save-btn" onclick="saveNote()">SALVAR ANOTAÇÃO</button>
+    </div>
+  </div>
+</div>
+
+<div id="history-panel" class="panel-overlay" onclick="closePanelIfOutside(event,'history-panel')">
+  <div class="panel panel-flex" style="position:relative;">
+    <div style="flex-shrink:0; padding:0 16px;">
+      <div class="panel-handle"></div>
+      <div class="panel-title">📖 HISTÓRICO DE LEITURA</div>
+      <button class="panel-close" onclick="closePanel('history-panel')">✕</button>
+    </div>
+    <div id="history-list" class="panel-scroll"></div>
+  </div>
+</div>
+
+<div id="plan-panel" class="panel-overlay" onclick="closePanelIfOutside(event,'plan-panel')">
+  <div class="panel" style="position:relative">
+    <div class="panel-handle"></div>
+    <div class="panel-title">📅 PLANO DE LEITURA — 1 ANO</div>
+    <button class="panel-close" onclick="closePanel('plan-panel')">✕</button>
+    <div id="plan-content"></div>
+  </div>
+</div>
+
+<div id="credits-modal">
+  <div class="credits-card">
+    <div class="credits-cross">✝</div>
+    <div class="credits-title">BÍBLIA SAGRADA</div>
+    <div class="credits-divider"></div>
+    <div class="credits-produced">PRODUZIDO POR</div>
+    <div class="credits-name">Pr Uanderley</div>
+    <div class="credits-sub">Pastor & Desenvolvedor</div>
+    <div class="credits-verse">
+      "Lâmpada para os meus pés é a tua palavra, e luz para o meu caminho."<br>
+      <small style="color:var(--text-muted)">— Salmos 119:105</small>
+    </div>
+    <div class="credits-version">Versão João Ferreira de Almeida<br>66 Livros · 1189 Capítulos · 31103 Versículos</div>
+    <button class="credits-close-btn" onclick="closeCredits()">FECHAR</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+let bibleData = [];
+let currentBook = 0;
+let currentChapter = 0;
+let selectedVerses = [];
+let lastSelectedVerse = null;
+let highlights = {};
+let notes = {};
+let favorites = [];
+let readHistory = [];
+let showVerseNums = true;
+let currentFontSize = 18;
+let currentSpacing = 1.8;
+let currentFont = 'garamond';
+let isLight = false;
+let currentStatusBarColor = '#C8962D';
+var _savedScrollPos = 0;
+let isReadingMode = false;
+let readingTimer = null;
+
+// TTS Variables
+let ttsRunning = false;
+let ttsUtterance = null;
+let ttsKeepaliveInterval = null;
+let ttsFullText = '';
+
+let _initAttempts = 0;
+
+function _tryInit() {
+  _initAttempts++;
+  const dataReady = (typeof bibleDataExterno !== 'undefined' && Array.isArray(bibleDataExterno) && bibleDataExterno.length > 0);
+
+  if (!dataReady && _initAttempts < 20) {
+    setTimeout(_tryInit, 300);
+    return;
+  }
+
+  try {
+    bibleData = dataReady ? bibleDataExterno : getFallbackData();
+    loadHighlights();
+    loadNotes();
+    loadFavorites();
+    loadHistory();
+    loadChaptersRead();
+    loadSettings();
+    buildBookSelect();
+    renderChapter();
+    _autoShowVerseDay();
+    if (_savedScrollPos > 0) {
+      setTimeout(function() {
+        var c = document.getElementById('content');
+        if (c) c.scrollTop = _savedScrollPos;
+        _savedScrollPos = 0;
+      }, 150);
+    }
+  } catch(err) {
+    console.error('Init error:', err);
+    try {
+      bibleData = getFallbackData();
+      buildBookSelect();
+      renderChapter();
+    } catch(e2) {}
+  } finally {
+    document.getElementById('loading').classList.add('hidden');
+  }
+}
+
+setTimeout(() => {
+  document.getElementById('loading').classList.add('hidden');
+}, 10000);
+
+window.addEventListener('load', () => setTimeout(_tryInit, 200));
+
+function getFallbackData() {
+  return [{
+    name: "DADOS NÃO ENCONTRADOS",
+    chapters: [["Adicione o arquivo Biblia_data.js na mesma pasta que este HTML e recarregue a página."]]
+  }];
+}
+
+function buildBookSelect() {
+  const sel = document.getElementById('book-select');
+  sel.innerHTML = '';
+  const OT_books = 39;
+  bibleData.forEach((book, i) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = (i < OT_books ? '📜 ' : '✝ ') + book.name;
+    if (i === currentBook) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+function onBookChange() {
+  currentBook = parseInt(document.getElementById('book-select').value);
+  currentChapter = 0;
+  selectedVerses.length = 0; lastSelectedVerse = null;
+  renderChapter();
+  setTimeout(openChapterPicker, 150);
+}
+
+function renderChapter(keepScroll) {
+  try { _renderChapter(keepScroll); } catch(e) { console.error('renderChapter:', e); }
+}
+
+function _renderChapter(keepScroll) {
+  const book = bibleData[currentBook];
+  if (!book) return;
+  const chapter = book.chapters[currentChapter];
+  if (!chapter) return;
+
+  document.getElementById('chapter-indicator').textContent = currentChapter + 1;
+
+  const content = document.getElementById('content');
+  content.innerHTML = '';
+
+  // Detecta títulos de seção — alguns formatos de Biblia_data.js incluem
+  // objetos {title:'...', verse:N} ou marcam versos com prefixo especial.
+  // Suporte a: array simples de strings OU array misto com objetos de título.
+  const sectionTitles = {}; // { verseIndex: 'Título da seção' }
+
+  // Formato 1: capítulo tem propriedade .titles = [{verse:0, text:'...'}]
+  if (book.titles && book.titles[currentChapter]) {
+    book.titles[currentChapter].forEach(t => { sectionTitles[t.verse] = t.text; });
+  }
+  // Formato 2: capítulo é array misto com objetos {t:'título'} intercalados
+  const verseArray = [];
+  chapter.forEach(item => {
+    if (typeof item === 'object' && item !== null && (item.t || item.title)) {
+      sectionTitles[verseArray.length] = item.t || item.title;
+    } else {
+      verseArray.push(item);
+    }
+  });
+  const verses = verseArray.length > 0 ? verseArray : chapter;
+
+  verses.forEach((text, i) => {
+    // Insere título de seção antes do verso correspondente
+    if (sectionTitles[i]) {
+      const titleDiv = document.createElement('div');
+      titleDiv.className = 'section-title';
+      titleDiv.textContent = sectionTitles[i];
+      content.appendChild(titleDiv);
+    }
+
+    const verseKey = `${currentBook}-${currentChapter}-${i}`;
+    const hl = highlights[verseKey] || '';
+    const note = notes[verseKey] || '';
+    const isFav = favorites.some(f => f.key === verseKey);
+
+    const div = document.createElement('div');
+    div.className = `verse${hl ? ' hl-' + hl : ''}${selectedVerses.indexOf(i) >= 0 ? ' selected' : ''}`;
+    div.dataset.verse = i;
+    div.onclick = () => selectVerse(i);
+
+    div.innerHTML = `
+      <span class="verse-num" style="${showVerseNums ? '' : 'display:none'}">${i + 1}</span>
+      <span class="verse-text">${text}</span>${note ? `<span class="verse-note-icon" title="Ver anotação" onclick="event.stopPropagation();viewNote(${i})">📝</span>` : ''}
+    `;
+    content.appendChild(div);
+  });
+
+  if (!keepScroll) content.scrollTop = 0;
+  selectedVerses.length = 0;
+  lastSelectedVerse = null;
+  resetReadingTimer();
+  addHistory(currentBook, currentChapter);
+  saveSettings();
+}
+
+function selectVerse(idx) {
+  if (isReadingMode) return;
+
+  if (selectedVerses.indexOf(idx) >= 0) {
+    // Deselect this verse
+    selectedVerses.splice(selectedVerses.indexOf(idx), 1);
+    const el = document.querySelector(`.verse[data-verse="${idx}"]`);
+    if (el) el.classList.remove('selected');
+    if (lastSelectedVerse === idx) {
+      lastSelectedVerse = selectedVerses.length > 0 ? selectedVerses.slice().pop() : null;
+    }
+  } else {
+    // Add to selection
+    if (selectedVerses.indexOf(idx) < 0) selectedVerses.push(idx);
+    lastSelectedVerse = idx;
+    const el = document.querySelector(`.verse[data-verse="${idx}"]`);
+    if (el) el.classList.add('selected');
+  }
+
+  hideVerseMenu();
+  if (selectedVerses.length > 0) {
+    // Show menu near the last tapped verse
+    const el = document.querySelector(`.verse[data-verse="${idx}"]`);
+    if (el) showVerseMenu(el);
+  }
+}
+
+function showVerseMenu(verseEl) {
+  var menu = document.getElementById('verse-menu');
+  menu.classList.add('visible');
+}
+
+function hideVerseMenu() {
+  document.getElementById('verse-menu').classList.remove('visible');
+}
+
+function vmHighlight() {
+  hideVerseMenu();
+  openPanel('highlight-panel');
+}
+
+function vmNote() {
+  hideVerseMenu();
+  openNoteEditor();
+}
+
+function vmFavorite() {
+  hideVerseMenu();
+  toggleFavoriteSelected();
+}
+
+function vmCopy() {
+  hideVerseMenu();
+  copySelected();
+}
+
+function vmSearch() {
+  hideVerseMenu();
+  openSearch();
+}
+
+function prevChapter() {
+  if (currentChapter > 0) {
+    currentChapter--;
+  } else if (currentBook > 0) {
+    currentBook--;
+    document.getElementById('book-select').value = currentBook;
+    currentChapter = bibleData[currentBook].chapters.length - 1;
+  }
+  selectedVerses.length = 0; lastSelectedVerse = null;
+  renderChapter();
+}
+
+function nextChapter() {
+  const book = bibleData[currentBook];
+  if (currentChapter < book.chapters.length - 1) {
+    currentChapter++;
+  } else if (currentBook < bibleData.length - 1) {
+    currentBook++;
+    document.getElementById('book-select').value = currentBook;
+    currentChapter = 0;
+  }
+  selectedVerses.length = 0; lastSelectedVerse = null;
+  renderChapter();
+}
+
+function openChapterPicker() {
+  const book = bibleData[currentBook];
+  const grid = document.getElementById('chapter-grid');
+  grid.innerHTML = '';
+  document.getElementById('ch-picker-title').textContent = book.name + ' — Capítulos';
+
+  var readCount = 0;
+  book.chapters.forEach((_, i) => {
+    const cell = document.createElement('div');
+    var isRead = isChapterRead(currentBook, i);
+    if (isRead) readCount++;
+    cell.className = 'ch-cell' + (i === currentChapter ? ' current' : '') + (isRead ? ' read' : '');
+    cell.textContent = i + 1;
+    cell.onclick = () => {
+      currentChapter = i;
+      selectedVerses.length = 0; lastSelectedVerse = null;
+      renderChapter();
+      closePanel('chapter-picker');
+      setTimeout(openVersePicker, 200);
+    };
+    grid.appendChild(cell);
+  });
+
+  var total = book.chapters.length;
+  var pct = total > 0 ? Math.round((readCount / total) * 100) : 0;
+  var progEl = document.getElementById('chapter-progress');
+  if (progEl) progEl.textContent = readCount + ' de ' + total + ' capítulos lidos (' + pct + '%)';
+  var fillEl = document.getElementById('ch-progress-fill');
+  if (fillEl) fillEl.style.width = pct + '%';
+
+  openPanel('chapter-picker');
+}
+
+function openVersePicker() {
+  var book = bibleData[currentBook];
+  var ch = book.chapters[currentChapter];
+  var grid = document.getElementById('verse-grid');
+  grid.innerHTML = '';
+  document.getElementById('vs-picker-title').textContent = book.name + ' ' + (currentChapter + 1) + ' — Versículos';
+  for (var i = 0; i < ch.length; i++) {
+    var cell = document.createElement('div');
+    cell.className = 'vs-cell';
+    cell.textContent = i + 1;
+    cell.setAttribute('data-vi', i);
+    cell.onclick = function() {
+      var vi = parseInt(this.getAttribute('data-vi'));
+      closePanel('verse-picker');
+      setTimeout(function() {
+        var el = document.querySelector('.verse[data-verse="' + vi + '"]');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 150);
+    };
+    grid.appendChild(cell);
+  }
+  openPanel('verse-picker');
+}
+
+function applyHighlight(color) {
+  if (selectedVerses.length === 0) {
+    showToast('Toque em um versículo primeiro');
+    closePanel('highlight-panel');
+    return;
+  }
+  var count = selectedVerses.length;
+  selectedVerses.forEach(vi => {
+    const key = `${currentBook}-${currentChapter}-${vi}`;
+    if (color === 'none') {
+      delete highlights[key];
+    } else {
+      highlights[key] = color;
+    }
+  });
+  const savedScroll = document.getElementById('content').scrollTop;
+  selectedVerses.length = 0;
+  lastSelectedVerse = null;
+  saveHighlights();
+  renderChapter(true);
+  closePanel('highlight-panel');
+  hideVerseMenu();
+  showToast(color === 'none'
+    ? (count === 1 ? 'Marcação removida' : count + ' marcações removidas')
+    : (count === 1 ? 'Versículo marcado!' : count + ' versículos marcados!'));
+  setTimeout(function() {
+    document.getElementById('content').scrollTop = savedScroll;
+  }, 60);
+}
+
+function saveHighlights() {
+  try { localStorage.setItem('jfa_highlights', JSON.stringify(highlights)); } catch(e){}
+}
+
+function loadHighlights() {
+  try {
+    const s = localStorage.getItem('jfa_highlights');
+    if (s) highlights = JSON.parse(s);
+  } catch(e){}
+}
+
+function getSelectedText() {
+  if (selectedVerses.length === 0) return null;
+  const book = bibleData[currentBook];
+  const sorted = selectedVerses.slice().sort((a, b) => a - b);
+  const lines = sorted.map(i => book.chapters[currentChapter][i]);
+  const first = sorted[0] + 1;
+  const last = sorted[sorted.length - 1] + 1;
+  const ref = first === last
+    ? book.name + ' ' + (currentChapter + 1) + '.' + first
+    : book.name + ' ' + (currentChapter + 1) + '.' + first + '-' + last;
+  var text = lines.join('\n');
+  text = text.charAt(0).toUpperCase() + text.slice(1);
+  return text + '\n' + ref;
+}
+
+function vmShare() {
+  hideVerseMenu();
+  shareSelected();
+}
+
+function shareSelected() {
+  const msg = getSelectedText();
+  if (!msg) { showToast('Selecione um versículo'); return; }
+  if (navigator.share) {
+    navigator.share({ text: msg }).catch(() => {});
+  } else {
+    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  }
+  _clearSelection();
+}
+
+function shareVerseDay() {
+  const v   = _versiculosDoDia[_currentVerseDayIdx];
+  const msg = v[3] + '\n' + v[4].replace(':', '.');
+  if (navigator.share) {
+    navigator.share({ text: msg }).catch(() => {});
+  } else {
+    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  }
+}
+
+function copySelected() {
+  const txt = getSelectedText();
+  if (!txt) { showToast('Selecione um versículo'); return; }
+  // Toast mostra a referência
+  const book = bibleData[currentBook];
+  const sorted = selectedVerses.slice().sort((a,b)=>a-b);
+  const first = sorted[0]+1, last = sorted[sorted.length-1]+1;
+  const ref = first === last
+    ? book.name + ' ' + (currentChapter+1) + ':' + first
+    : book.name + ' ' + (currentChapter+1) + ':' + first + '-' + last;
+  const msg = selectedVerses.length === 1 ? ref + ' copiado!' : ref + ' copiados!';
+  navigator.clipboard.writeText(txt).then(() => { showToast('📋 ' + msg); _clearSelection(); }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = txt; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('📋 ' + msg); _clearSelection();
+  });
+}
+
+function _clearSelection() {
+  document.querySelectorAll('.verse.selected').forEach(v => v.classList.remove('selected'));
+  selectedVerses.length = 0;
+  lastSelectedVerse = null;
+  hideVerseMenu();
+}
+
+let searchScope = 'all'; // 'all' | 'ot' | 'nt' | 'book'
+let searchTimer = null;
+
+function setSearchScope(scope) {
+  searchScope = scope;
+  document.querySelectorAll('.sf-btn').forEach(b => b.classList.toggle('active', b.dataset.scope === scope));
+  // Atualiza label do botão "Este Livro"
+  const bookBtn = document.getElementById('sf-book-btn');
+  if (bookBtn) bookBtn.textContent = scope === 'book' ? bibleData[currentBook].name : 'Este Livro';
+  _doSearch();
+}
+
+function openSearch() {
+  // Atualiza o botão com o livro atual
+  const bookBtn = document.getElementById('sf-book-btn');
+  if (bookBtn && bibleData[currentBook]) bookBtn.textContent = bibleData[currentBook].name;
+  openPanel('search-panel');
+  setTimeout(() => document.getElementById('search-input').focus(), 300);
+}
+
+function doSearch() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(_doSearch, 300);
+}
+
+function _doSearch() {
+  const query = document.getElementById('search-input').value.trim().toLowerCase();
+  const resultsEl = document.getElementById('search-results');
+  const countEl = document.getElementById('search-count');
+
+  if (query.length < 3) {
+    resultsEl.innerHTML = '';
+    countEl.textContent = '';
+    return;
+  }
+
+  // Determina faixa de livros pelo escopo
+  let startBi = 0, endBi = bibleData.length - 1;
+  if (searchScope === 'ot') { startBi = 0; endBi = 38; }
+  else if (searchScope === 'nt') { startBi = 39; endBi = bibleData.length - 1; }
+  else if (searchScope === 'book') { startBi = endBi = currentBook; }
+
+  let results = [];
+  for (let bi = startBi; bi <= endBi; bi++) {
+    const book = bibleData[bi];
+    if (!book) continue;
+    book.chapters.forEach((chap, ci) => {
+      chap.forEach((verse, vi) => {
+        if (typeof verse === 'string' && verse.toLowerCase().includes(query)) {
+          results.push({ book: book.name, bi, ci, vi, text: verse });
+        }
+      });
+    });
+  }
+
+  const scopeLabel = searchScope === 'ot' ? 'no AT' : searchScope === 'nt' ? 'no NT' : searchScope === 'book' ? 'em ' + bibleData[currentBook].name : '';
+  countEl.textContent = results.length === 0
+    ? 'Nenhum resultado ' + scopeLabel
+    : `${results.length} resultado${results.length > 1 ? 's' : ''} encontrado${results.length > 1 ? 's' : ''} ${scopeLabel}`;
+
+  resultsEl.innerHTML = results.map(r => {
+    const esc = r.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const highlighted = esc.replace(new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'gi'),
+      m => `<mark>${m}</mark>`);
+    return `<div class="search-result" onclick="goToVerse(${r.bi},${r.ci},${r.vi})">
+      <div class="search-result-ref">${r.book} ${r.ci+1}:${r.vi+1}</div>
+      <div class="search-result-text">${highlighted}</div>
+    </div>`;
+  }).join('');
+}
+
+function goToVerse(bi, ci, vi) {
+  currentBook = bi;
+  currentChapter = ci;
+  document.getElementById('book-select').value = bi;
+  renderChapter();
+  closePanel('search-panel');
+  setTimeout(() => {
+    selectVerse(vi);
+    const el = document.querySelector(`.verse[data-verse="${vi}"]`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 100);
+}
+
+function loadNotes() {
+  try { const s = localStorage.getItem('jfa_notes'); if (s) notes = JSON.parse(s); } catch(e){}
+}
+
+function saveNoteData() {
+  try { localStorage.setItem('jfa_notes', JSON.stringify(notes)); } catch(e){}
+}
+
+function openNoteEditor() {
+  if (selectedVerses.length === 0) { showToast('Toque em um versículo primeiro'); return; }
+  const vi = lastSelectedVerse !== null ? lastSelectedVerse : selectedVerses.slice()[0];
+  const key = `${currentBook}-${currentChapter}-${vi}`;
+  const book = bibleData[currentBook];
+  document.getElementById('note-ref-label').textContent =
+    `${book.name} ${currentChapter + 1}:${vi + 1}`;
+  document.getElementById('note-textarea').value = notes[key] || '';
+  lastSelectedVerse = vi;
+  openPanel('note-panel');
+}
+
+function viewNote(verseIdx) {
+  const key = `${currentBook}-${currentChapter}-${verseIdx}`;
+  const note = notes[key];
+  if (!note) return;
+  const book = bibleData[currentBook];
+  document.getElementById('note-view-ref').textContent =
+    `${book.name} ${currentChapter + 1}:${verseIdx + 1}`;
+  document.getElementById('note-view-text').textContent = note;
+  lastSelectedVerse = verseIdx;
+  if (selectedVerses.indexOf(verseIdx) < 0) selectedVerses.push(verseIdx);
+  openPanel('note-view-panel');
+}
+
+function editNoteFromView() {
+  closePanel('note-view-panel');
+  setTimeout(() => openNoteEditor(), 200);
+}
+
+function saveNote() {
+  if (lastSelectedVerse === null) return;
+  const key = `${currentBook}-${currentChapter}-${lastSelectedVerse}`;
+  const txt = document.getElementById('note-textarea').value.trim();
+  if (txt) { notes[key] = txt; } else { delete notes[key]; }
+  saveNoteData();
+  closePanel('note-panel');
+  renderChapter(true);
+  showToast(txt ? 'Anotação salva!' : 'Anotação removida');
+}
+
+function deleteNote() {
+  if (lastSelectedVerse === null) return;
+  const key = `${currentBook}-${currentChapter}-${lastSelectedVerse}`;
+  delete notes[key];
+  saveNoteData();
+  closePanel('note-panel');
+  renderChapter(true);
+  showToast('Anotação removida');
+}
+
+function loadFavorites() {
+  try { const s = localStorage.getItem('jfa_favorites'); if (s) favorites = JSON.parse(s); } catch(e){}
+}
+
+function saveFavorites() {
+  try { localStorage.setItem('jfa_favorites', JSON.stringify(favorites)); } catch(e){}
+}
+
+function toggleFavoriteSelected() {
+  if (selectedVerses.length === 0) { showToast('Toque em um versículo primeiro'); return; }
+  const vi = lastSelectedVerse !== null ? lastSelectedVerse : selectedVerses.slice()[0];
+  const book = bibleData[currentBook];
+  const key = `${currentBook}-${currentChapter}-${vi}`;
+  const existIdx = favorites.findIndex(f => f.key === key);
+  if (existIdx >= 0) {
+    favorites.splice(existIdx, 1);
+    showToast('Removido dos favoritos');
+  } else {
+    favorites.unshift({
+      key,
+      bi: currentBook, ci: currentChapter, vi: vi,
+      ref: `${book.name} ${currentChapter + 1}:${vi + 1}`,
+      text: book.chapters[currentChapter][vi],
+      date: new Date().toLocaleDateString('pt-BR')
+    });
+    showToast('⭐ Adicionado aos favoritos!');
+  }
+  saveFavorites();
+  renderChapter(true);
+}
+
+function openFavorites() {
+  const list = document.getElementById('favorites-list');
+  if (favorites.length === 0) {
+    list.innerHTML = '<div class="fav-empty">Nenhum versículo favorito ainda.<br>Toque em um versículo e escolha ⭐ Favoritar.</div>';
+  } else {
+    list.innerHTML = favorites.map((f, idx) => `
+      <div class="fav-item" onclick="goToVerse(${f.bi},${f.ci},${f.vi})">
+        <div class="fav-item-ref">
+          <span>${f.ref}</span>
+          <button class="fav-del" onclick="event.stopPropagation();removeFavorite(${idx})">✕</button>
+        </div>
+        <div class="fav-item-text">${f.text}</div>
+      </div>
+    `).join('');
+  }
+  openPanel('favorites-panel');
+}
+
+function removeFavorite(idx) {
+  favorites.splice(idx, 1);
+  saveFavorites();
+  openFavorites();
+}
+
+function loadHistory() {
+  try { const s = localStorage.getItem('jfa_history'); if (s) readHistory = JSON.parse(s); } catch(e){}
+}
+
+function saveHistory() {
+  try { localStorage.setItem('jfa_history', JSON.stringify(readHistory)); } catch(e){}
+}
+
+function addHistory(bi, ci) {
+  if (!bibleData[bi]) return;
+  const book = bibleData[bi];
+  const entry = {
+    bi, ci,
+    ref: `${book.name} — Capítulo ${ci + 1}`,
+    time: new Date().toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' })
+  };
+  readHistory = readHistory.filter(h => !(h.bi === bi && h.ci === ci));
+  readHistory.unshift(entry);
+  if (readHistory.length > 50) readHistory = readHistory.slice(0, 50);
+  saveHistory();
+}
+
+function openHistory() {
+  const list = document.getElementById('history-list');
+  if (readHistory.length === 0) {
+    list.innerHTML = '<div class="fav-empty">Nenhum histórico ainda.<br>Os capítulos lidos aparecerão aqui.</div>';
+  } else {
+    const bookEmoji = bi => bi < 39 ? '📜' : '✝';
+    list.innerHTML = readHistory.map(h => `
+      <div class="hist-item" onclick="gotoHistoryItem(${h.bi},${h.ci})">
+        <span class="hist-icon">${bookEmoji(h.bi)}</span>
+        <div class="hist-info">
+          <div class="hist-book">${h.ref}</div>
+          <div class="hist-time">${h.time}</div>
+        </div>
+      </div>
+    `).join('') + `<button class="hist-clear-btn" onclick="clearHistory()">🗑 Limpar histórico</button>`;
+  }
+  openPanel('history-panel');
+}
+
+function gotoHistoryItem(bi, ci) {
+  currentBook = bi; currentChapter = ci;
+  document.getElementById('book-select').value = bi;
+  renderChapter();
+  closePanel('history-panel');
+}
+
+function clearHistory() {
+  readHistory = [];
+  saveHistory();
+  openHistory();
+}
+
+let planData = { day: 1, done: {} };
+
+function loadPlanData() {
+  try {
+    const s = localStorage.getItem('jfa_plan');
+    if (s) planData = JSON.parse(s);
+    if (!planData.day) planData.day = 1;
+    if (!planData.done) planData.done = {};
+  } catch(e){}
+}
+
+function savePlanData() {
+  try { localStorage.setItem('jfa_plan', JSON.stringify(planData)); } catch(e){}
+}
+
+function getPlanChapters() {
+  if (!bibleData || bibleData.length < 66) return null;
+  if (getPlanChapters._cache) return getPlanChapters._cache;
+  const all = [];
+  bibleData.forEach((book, bi) => {
+    book.chapters.forEach((_, ci) => {
+      all.push({ bi, ci, label: `${book.name} ${ci + 1}` });
+    });
+  });
+  const total = all.length;
+  const days = [];
+  let idx = 0;
+  for (let d = 0; d < 365; d++) {
+    const remaining = total - idx;
+    const daysLeft = 365 - d;
+    const count = Math.ceil(remaining / daysLeft);
+    days.push(all.slice(idx, idx + count));
+    idx += count;
+  }
+  getPlanChapters._cache = days;
+  return days;
+}
+
+function openPlan() {
+  loadPlanData();
+  renderPlan();
+  openPanel('plan-panel');
+}
+
+function renderPlan() {
+  const plan = getPlanChapters();
+  const container = document.getElementById('plan-content');
+  if (!plan) {
+    container.innerHTML = '<div class="fav-empty">Os dados da Bíblia ainda não foram carregados.</div>';
+    return;
+  }
+  const day = Math.min(Math.max(1, planData.day), 365);
+  const chapters = plan[day - 1];
+  const totalDone = Object.keys(planData.done).filter(k => k.startsWith('day') && planData.done[k]).length;
+  const pct = Math.round((day - 1) / 365 * 100);
+
+  container.innerHTML = `
+    <div class="plan-header">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-family:'Cinzel',serif;font-size:14px;color:var(--accent-gold)">Progresso</span>
+        <span style="font-size:13px;color:var(--text-muted)">${pct}%</span>
+      </div>
+      <div class="plan-progress-bar"><div class="plan-progress-fill" style="width:${pct}%"></div></div>
+      <div class="plan-stats"><span>Dia ${day} de 365</span><span>${totalDone} leituras concluídas</span></div>
+    </div>
+    <div class="plan-day-title">📅 DIA ${day}</div>
+    ${chapters.map((ch, i) => {
+      const doneKey = `day${day}_${i}`;
+      const isDone = !!planData.done[doneKey];
+      return `<div class="plan-reading-item${isDone ? ' done' : ''}" onclick="planToggleDone(${day},${i},${ch.bi},${ch.ci})">
+        <div class="plan-check">${isDone ? '✓' : ''}</div>
+        <div class="plan-reading-text">${ch.label}</div>
+        <span style="font-size:18px;color:var(--text-muted)">›</span>
+      </div>`;
+    }).join('')}
+    <div class="plan-nav-btns">
+      <button class="plan-nav-btn" onclick="planChangeDay(-1)" ${day <= 1 ? 'disabled style="opacity:.4"' : ''}>‹ Anterior</button>
+      <button class="plan-nav-btn primary" onclick="planGoToday()">Hoje</button>
+      <button class="plan-nav-btn" onclick="planChangeDay(1)" ${day >= 365 ? 'disabled style="opacity:.4"' : ''}>Próximo ›</button>
+    </div>
+    <button class="plan-reset-btn" onclick="if(confirm('Reiniciar plano de leitura?')){planData={day:1,done:{}};savePlanData();renderPlan();}">↺ Reiniciar plano</button>
+  `;
+}
+
+function planToggleDone(day, idx, bi, ci) {
+  const key = `day${day}_${idx}`;
+  if (planData.done[key]) {
+    currentBook = bi; currentChapter = ci;
+    document.getElementById('book-select').value = bi;
+    renderChapter();
+    closePanel('plan-panel');
+    return;
+  }
+  planData.done[key] = true;
+  const plan = getPlanChapters();
+  const total = plan[day - 1].length;
+  const allDone = Array.from({length: total}, (_, i) => planData.done[`day${day}_${i}`]).every(Boolean);
+  if (allDone && day < 365) {
+    planData.day = day + 1;
+    showToast(`🎉 Dia ${day} concluído!`);
+  }
+  savePlanData();
+  renderPlan();
+  currentBook = bi; currentChapter = ci;
+  document.getElementById('book-select').value = bi;
+  renderChapter();
+  closePanel('plan-panel');
+}
+
+function planChangeDay(delta) {
+  planData.day = Math.min(365, Math.max(1, planData.day + delta));
+  savePlanData();
+  renderPlan();
+}
+
+function planGoToday() {
+  const now = new Date();
+  // Cálculo timezone-safe: usa meia-noite local do ano corrente
+  const startOfYear = new Date(now.getFullYear(), 0, 1);
+  const diffMs = now - startOfYear;
+  const dayOfYear = Math.min(365, Math.max(1, Math.floor(diffMs / 86400000) + 1));
+  planData.day = dayOfYear;
+  savePlanData();
+  renderPlan();
+}
+
+// ════════════════════════════════════════════════════════
+// TTS — MOTOR DE VOZ CORRIGIDO
+// Problemas do código anterior:
+//  1. texto único gigante → WebView cortava após ~200 chars
+//  2. nenhuma voz pt-BR selecionada → silêncio ou voz errada
+//  3. fila por verso com prompt() → não funciona em APK moderno
+//  4. keepalive de 2.5s insuficiente → WebView pausava silenciosamente
+//  5. sem interação do usuário antes de speak() → bloqueio autoplay
+//
+// Solução: fila de utterances curtas (1 verso por utterance),
+//          seleção automática de voz pt-BR, keepalive a cada 500ms,
+//          retomada agressiva ao voltar do background.
+// ════════════════════════════════════════════════════════
+
+// ── ESTADO ────────────────────────────────────
+let _ttsQueue    = [];   // lista de strings (1 verso cada)
+let _ttsIdx      = 0;    // índice atual na fila
+let _ttsSpeed    = 0.9;
+let _ttsPitch    = 1.0;
+let _ttsBookName = '';
+let _ttsCount    = 0;
+
+// ── DETECÇÃO ──────────────────────────────────
+function _hasAndroidBridge() {
+  return typeof window.Android !== 'undefined' &&
+         typeof window.Android.startTTS === 'function';
+}
+function _hasWebSpeech() {
+  return typeof window.speechSynthesis !== 'undefined';
+}
+function _isAndroidWebView() {
+  const ua = navigator.userAgent || '';
+  return /Android/.test(ua);
+}
+
+// ── SELECIONAR VOZ pt-BR ──────────────────────
+// Problema central: sem selecionar voz explícita, Chrome/WebView
+// usa a voz padrão do sistema que pode ser outra língua → silêncio.
+function _getBestVoice() {
+  if (!_hasWebSpeech()) return null;
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices || voices.length === 0) return null;
+
+  // 1. Voz local pt-BR (melhor qualidade, funciona offline)
+  const localPtBR = voices.find(v => v.localService && v.lang === 'pt-BR');
+  if (localPtBR) return localPtBR;
+
+  // 2. Qualquer pt-BR
+  const ptBR = voices.find(v => v.lang === 'pt-BR');
+  if (ptBR) return ptBR;
+
+  // 3. Qualquer pt-*
+  const pt = voices.find(v => v.lang && v.lang.startsWith('pt'));
+  if (pt) return pt;
+
+  // 4. Voz padrão (melhor que silêncio)
+  return voices[0] || null;
+}
+
+// ── UI ────────────────────────────────────────
+function openVoice() {
+  const book = bibleData[currentBook];
+  const infoCard = document.getElementById('voice-chapter-info');
+  if (infoCard && book) {
+    const ch = book.chapters[currentChapter];
+    const totalVerses = ch ? ch.length : 0;
+    infoCard.innerHTML =
+      '<div class="voice-chapter-book">' + book.name + '</div>' +
+      '<div class="voice-chapter-detail">Capítulo ' + (currentChapter + 1) +
+      ' · ' + (lastSelectedVerse !== null
+        ? 'A partir do versículo ' + (lastSelectedVerse + 1)
+        : totalVerses + ' versículos') + '</div>';
+  }
+  // Warmup silencioso — desbloqueia o audioContext do WebView
+  // DEVE acontecer dentro do handler de gesto do usuário (onclick)
+  if (_hasWebSpeech() && !ttsRunning) {
+    try {
+      window.speechSynthesis.cancel();
+      const warmup = new SpeechSynthesisUtterance(' ');
+      warmup.volume = 0;
+      warmup.rate   = 1;
+      warmup.lang   = 'pt-BR';
+      window.speechSynthesis.speak(warmup);
+    } catch(e) {}
+  }
+  openPanel('voice-panel');
+}
+
+function updateVoiceControls() {
+  document.getElementById('speed-val').textContent =
+    parseFloat(document.getElementById('speed-slider').value).toFixed(1) + 'x';
+  document.getElementById('pitch-val').textContent =
+    parseFloat(document.getElementById('pitch-slider').value).toFixed(1);
+}
+
+function toggleVoice() {
+  if (ttsRunning) { stopVoice(); } else { startVoice(); }
+}
+
+// ── CONSTRUIR FILA DE VERSOS ──────────────────
+// Cada verso vira uma utterance separada.
+// Isso resolve o bug de corte de texto longo no WebView.
+function _buildQueue() {
+  const book    = bibleData[currentBook];
+  const chapter = book.chapters[currentChapter];
+  const start   = (lastSelectedVerse !== null) ? lastSelectedVerse : 0;
+  return chapter.slice(start).map((txt, i) => (start + i + 1) + '. ' + txt);
+}
+
+// ── INICIAR ───────────────────────────────────
+function startVoice() {
+  var book  = bibleData[currentBook];
+  var ch    = book.chapters[currentChapter];
+  var start = (lastSelectedVerse !== null) ? lastSelectedVerse : 0;
+
+  _ttsSpeed    = parseFloat(document.getElementById('speed-slider').value);
+  _ttsPitch    = parseFloat(document.getElementById('pitch-slider').value);
+  _ttsBookName = book.name;
+  _ttsCount    = ch.length - start;
+  _ttsQueue    = _buildQueue();
+  _ttsIdx      = 0;
+
+  // ── 1. Bridge Java nativa (APK com addJavascriptInterface) ──
+  // Padrão: startTTS(text, lang, speed, pitch) — verso por verso
+  if (_hasAndroidBridge()) {
+    try {
+      if (window.Android.acquireWakeLock) window.Android.acquireWakeLock();
+      ttsRunning = true;
+      _setVoicePlayingUI(true, '▶ ' + book.name + ' ' + (currentChapter + 1) + ' — ' + _ttsCount + ' versículos');
+      _startTtsKeepalive();
+      _androidSpeakNext(); // verso por verso via bridge
+      return;
+    } catch(e) {
+      console.warn('Bridge TTS falhou, usando WebSpeech:', e);
+      ttsRunning = false;
+    }
+  }
+
+  // ── 2. Web Speech API (fallback — navegador e alguns APKs) ──
+  if (_hasWebSpeech()) {
+    try { window.speechSynthesis.cancel(); } catch(e) {}
+
+    ttsRunning = true;
+    _setVoicePlayingUI(true, '▶ ' + book.name + ' ' + (currentChapter + 1) + ' — ' + _ttsCount + ' versículos');
+    _startTtsKeepalive();
+
+    setTimeout(() => {
+      if (!ttsRunning) return;
+      _ttsSpeakNext();
+    }, 200);
+    return;
+  }
+
+  _setProgress('❌ TTS não disponível. Instale o Google Text-to-Speech na Play Store.');
+}
+
+// ── BRIDGE ANDROID: verso por verso ───────────
+// window.Android.startTTS(text, lang, speed, pitch)
+// Quando o verso termina, APK chama window.onTTSVerseFinished()
+function _androidSpeakNext() {
+  if (!ttsRunning || _ttsIdx >= _ttsQueue.length) {
+    if (ttsRunning) _ttsFinished('Leitura concluída ✓');
+    return;
+  }
+
+  const text = _ttsQueue[_ttsIdx];
+
+  // Destaca o verso atual
+  document.querySelectorAll('.verse.tts-reading').forEach(el => el.classList.remove('tts-reading'));
+  const startVerse = (lastSelectedVerse !== null) ? lastSelectedVerse : 0;
+  const verseEl   = document.querySelector(`.verse[data-verse="${startVerse + _ttsIdx}"]`);
+  if (verseEl) {
+    verseEl.classList.add('tts-reading');
+    verseEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  _setProgress('▶ Verso ' + (_ttsIdx + 1) + ' de ' + _ttsQueue.length);
+
+  try {
+    // Padrão exato: startTTS(text, lang, speed, pitch)
+    window.Android.startTTS(String(text), 'pt-BR', _ttsSpeed, _ttsPitch);
+  } catch(e) {
+    console.warn('Android.startTTS verso', _ttsIdx, e);
+    // Bridge falhou no meio — tenta WebSpeech para o resto
+    _ttsSpeakNext();
+  }
+}
+
+// APK chama este callback quando cada verso termina
+window.onTTSVerseFinished = () => {
+  if (!ttsRunning) return;
+  _ttsIdx++;
+  setTimeout(_androidSpeakNext, 150);
+};
+
+// ── FALAR PRÓXIMO VERSO ───────────────────────
+// Uma utterance por verso resolve o bug de corte do WebView.
+function _ttsSpeakNext() {
+  if (!ttsRunning || _ttsIdx >= _ttsQueue.length) {
+    if (ttsRunning) _ttsFinished('Leitura concluída ✓');
+    return;
+  }
+
+  const text = _ttsQueue[_ttsIdx];
+  const utt  = new SpeechSynthesisUtterance(text);
+
+  // Seleciona a melhor voz disponível
+  const voice = _getBestVoice();
+  if (voice) {
+    utt.voice = voice;
+    utt.lang  = voice.lang;
+  } else {
+    utt.lang = 'pt-BR';
+  }
+
+  utt.rate   = _ttsSpeed;
+  utt.pitch  = _ttsPitch;
+  utt.volume = 1;
+
+  utt.onstart = () => {
+    // Destaca o verso atual e rola para ele
+    document.querySelectorAll('.verse.tts-reading').forEach(el => el.classList.remove('tts-reading'));
+    const startVerse = (lastSelectedVerse !== null) ? lastSelectedVerse : 0;
+    const realIdx = startVerse + _ttsIdx;
+    const verseEl = document.querySelector(`.verse[data-verse="${realIdx}"]`);
+    if (verseEl) {
+      verseEl.classList.add('tts-reading');
+      verseEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    _setProgress('▶ Verso ' + (_ttsIdx + 1) + ' de ' + _ttsQueue.length + ' — ' + _ttsBookName + ' ' + (currentChapter + 1));
+  };
+
+  utt.onend = () => {
+    if (!ttsRunning) return;
+    _ttsIdx++;
+    // Pequena pausa entre versos (evita corte no início do próximo)
+    setTimeout(_ttsSpeakNext, 120);
+  };
+
+  utt.onerror = (ev) => {
+    const err = ev.error || '';
+    if (err === 'interrupted' || err === 'canceled') {
+      // Interrupção normal (usuário parou ou fila cancelada)
+      return;
+    }
+    console.warn('TTS erro verso', _ttsIdx, err);
+    if (!ttsRunning) return;
+    // Pula o verso com erro e continua
+    _ttsIdx++;
+    setTimeout(_ttsSpeakNext, 200);
+  };
+
+  ttsUtterance = utt;
+
+  try {
+    window.speechSynthesis.speak(utt);
+  } catch(e) {
+    console.warn('speak() falhou:', e);
+    _ttsFinished('⚠️ Falha ao falar. Tente novamente.');
+    return;
+  }
+
+  // Bug clássico WebView: speak() aceita mas fica em paused=true
+  // Forçar resume após 300ms resolve na maioria dos dispositivos
+  setTimeout(() => {
+    if (!ttsRunning) return;
+    try {
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+    } catch(e) {}
+  }, 300);
+}
+
+// ── PARAR ─────────────────────────────────────
+function stopVoice() {
+  ttsRunning   = false;
+  ttsUtterance = null;
+  _ttsIdx      = _ttsQueue.length;
+  _stopTtsKeepalive();
+
+  // AndroidBridge
+  if (_hasAndroidBridge()) {
+    try { if (window.Android.stopTTS) window.Android.stopTTS(); } catch(e) {}
+    try { if (window.Android.releaseWakeLock) window.Android.releaseWakeLock(); } catch(e) {}
+  }
+  try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch(e) {}
+  _ttsFinished('Pronto para leitura');
+}
+
+// Callbacks para APK com JavascriptInterface
+window.onTTSFinished = () => _ttsFinished('Leitura concluída ✓');
+window.onTTSError    = (msg) => _ttsFinished('⚠️ ' + (msg || 'Erro TTS'));
+
+// ── KEEPALIVE ─────────────────────────────────
+// WebView Android pausa o speechSynthesis silenciosamente.
+// Intervalo de 500ms detecta e retoma imediatamente.
+function _startTtsKeepalive() {
+  _stopTtsKeepalive();
+  ttsKeepaliveInterval = setInterval(() => {
+    if (!ttsRunning) { _stopTtsKeepalive(); return; }
+    try {
+      if (window.speechSynthesis && window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+    } catch(e) {}
+  }, 500);
+}
+function _stopTtsKeepalive() {
+  if (ttsKeepaliveInterval) { clearInterval(ttsKeepaliveInterval); ttsKeepaliveInterval = null; }
+}
+
+// ── HELPERS ───────────────────────────────────
+function _setProgress(msg) {
+  const el = document.getElementById('voice-progress');
+  if (el) el.innerHTML = '<span class="voice-status-dot"></span> ' + msg;
+}
+function _setVoicePlayingUI(playing, progressMsg) {
+  const icon = document.getElementById('voice-icon');
+  const lbl  = document.getElementById('voice-label-btn');
+  const btn  = document.getElementById('voice-btn');
+  if (icon) icon.textContent = playing ? '⏹' : '▶';
+  if (lbl)  lbl.textContent  = playing ? 'PARAR LEITURA' : 'INICIAR LEITURA';
+  if (btn)  btn.classList.toggle('playing', playing);
+  if (progressMsg) _setProgress(progressMsg);
+}
+function _ttsFinished(msg) {
+  ttsRunning   = false;
+  ttsUtterance = null;
+  _stopTtsKeepalive();
+  document.querySelectorAll('.verse.tts-reading').forEach(el => el.classList.remove('tts-reading'));
+  _setVoicePlayingUI(false, msg);
+}
+
+// ── DIAGNÓSTICO ───────────────────────────────
+function ttsdiag() {
+  var lines = [];
+  lines.push('Bridge: ' + (_hasAndroidBridge() ? '✅' : '❌'));
+  lines.push('WebView: ' + (_isAndroidWebView() ? '✅' : '❌'));
+
+  if (_hasWebSpeech()) {
+    const voices = window.speechSynthesis.getVoices();
+    const pt     = voices.filter(v => v.lang && v.lang.startsWith('pt'));
+    const best   = _getBestVoice();
+    lines.push('WebSpeech: ✅');
+    lines.push('Vozes: ' + voices.length + ' | PT: ' + pt.length);
+    lines.push('Melhor: ' + (best ? best.name + ' (' + best.lang + ')' : 'nenhuma'));
+    lines.push('Falando: ' + (window.speechSynthesis.speaking ? '✅' : '❌'));
+    lines.push('Pausado: ' + (window.speechSynthesis.paused ? '⚠️ sim' : '✅ não'));
+
+    if (voices.length === 0) {
+      lines.push('⚠️ DICA: Instale "Conversão de texto em voz do Google" na Play Store e selecione como motor padrão em Configurações > Idiomas > TTS');
+    }
+
+    // Teste real audível com 1 verso curto
+    if (!window.speechSynthesis.speaking && !ttsRunning) {
+      try {
+        window.speechSynthesis.cancel();
+        const t = new SpeechSynthesisUtterance('Teste de voz. João 3:16.');
+        const v = _getBestVoice();
+        if (v) { t.voice = v; t.lang = v.lang; } else { t.lang = 'pt-BR'; }
+        t.rate = 1; t.pitch = 1; t.volume = 1;
+        t.onend   = () => _setProgress('✅ Voz funcionando! Clique INICIAR LEITURA.');
+        t.onerror = (e) => _setProgress('⚠️ Erro no teste: ' + (e.error || 'desconhecido') + ' — Verifique se o Google TTS está instalado.');
+        window.speechSynthesis.speak(t);
+        setTimeout(() => {
+          try { if (window.speechSynthesis.paused) window.speechSynthesis.resume(); } catch(e) {}
+        }, 300);
+        lines.push('🎵 Teste audível enviado...');
+      } catch(e) {
+        lines.push('⚠️ Falha no teste: ' + e.message);
+      }
+    }
+  } else {
+    lines.push('WebSpeech: ❌');
+    lines.push('💡 Instale "Google Text-to-Speech" na Play Store e defina como motor padrão em: Configurações > Idiomas > Conversão de texto em voz.');
+  }
+
+  _setProgress(lines.join(' | '));
+}
+
+// ── VISIBILIDADE / BACKGROUND ─────────────────
+// Quando o usuário sai do app (tela apaga, muda de aba),
+// o WebView pausa o speechSynthesis. Retomamos ao voltar.
+document.addEventListener('visibilitychange', () => {
+  if (!ttsRunning || !_hasWebSpeech()) return;
+  if (!document.hidden) {
+    setTimeout(() => {
+      try {
+        if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+        // Se parou completamente (speaking=false), recomeça do verso atual
+        if (!window.speechSynthesis.speaking && _ttsIdx < _ttsQueue.length) {
+          _ttsSpeakNext();
+        }
+      } catch(e) {}
+      try { if (_hasAndroidBridge() && window.Android.resumeTTS) window.Android.resumeTTS(); } catch(e) {}
+    }, 200);
+  }
+});
+
+// ── PRÉ-CARREGAR VOZES ────────────────────────
+// getVoices() é assíncrono na primeira chamada — chamamos cedo
+// para garantir que a lista esteja pronta quando o usuário tocar.
+(function _preloadVoices() {
+  if (!_hasWebSpeech()) return;
+  try {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = function() {
+      window.speechSynthesis.getVoices(); // força cache
+    };
+  } catch(e) {}
+})();
+
+// ══════════════════════════════════════════════════
+// VERSÍCULO DO DIA
+// ══════════════════════════════════════════════════
+const _versiculosDoDia = [
+  [0, 0, 0, "No princípio, criou Deus os céus e a terra.", "Gênesis 1:1"],
+  [42, 2, 15, "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna.", "João 3:16"],
+  [18, 22, 0, "O Senhor é o meu pastor; nada me faltará.", "Salmos 23:1"],
+  [19, 2, 5, "Confia no Senhor de todo o teu coração e não te estribes no teu próprio entendimento.", "Provérbios 3:5"],
+  [22, 40, 30, "Mas os que esperam no Senhor renovarão as suas forças; subirão com asas como águias; correrão e não se cansarão; caminharão e não se fatigarão.", "Isaías 40:31"],
+  [44, 7, 27, "E a paz de Deus, que excede todo o entendimento, guardará os vossos corações e os vossos pensamentos em Cristo Jesus.", "Filipenses 4:7"],
+  [44, 7, 12, "Posso todas as coisas naquele que me fortalece.", "Filipenses 4:13"],
+  [18, 90, 1, "Senhor, tu tens sido o nosso refúgio de geração em geração.", "Salmos 91:1"],
+  [5, 30, 5, "Sê forte e corajoso; não temas, nem te espantes, porque o Senhor, teu Deus, é contigo por onde quer que andares.", "Josué 1:9"],
+  [22, 41, 9, "Não temas, porque eu sou contigo; não te assombres, porque eu sou o teu Deus.", "Isaías 41:10"],
+  [18, 26, 0, "O Senhor é a minha luz e a minha salvação; a quem temerei?", "Salmos 27:1"],
+  [23, 28, 10, "Porque eu bem sei os pensamentos que tenho a vosso respeito, diz o Senhor; pensamentos de paz e não de mal.", "Jeremias 29:11"],
+  [44, 7, 6, "Não estejais inquietos por coisa alguma; antes, as vossas petições sejam em tudo conhecidas diante de Deus.", "Filipenses 4:6"],
+  [39, 10, 27, "Vinde a mim, todos os que estais cansados e oprimidos, e eu vos aliviarei.", "Mateus 11:28"],
+  [18, 118, 23, "Este é o dia que o Senhor fez; regozijemo-nos e alegremo-nos nele.", "Salmos 118:24"],
+  [45, 8, 27, "E sabemos que todas as coisas contribuem juntamente para o bem daqueles que amam a Deus.", "Romanos 8:28"],
+  [18, 33, 0, "Bendizerei o Senhor em todo o tempo; o seu louvor estará sempre na minha boca.", "Salmos 34:1"],
+  [19, 17, 21, "O amigo ama em todo o tempo; e na angústia nasce o irmão.", "Provérbios 18:24"],
+  [18, 120, 0, "Elevo os meus olhos para os montes: de onde me virá o socorro?", "Salmos 121:1"],
+];
+
+let _currentVerseDayIdx = 0;
+
+function showVerseDay() {
+  // Escolhe verso determinístico pelo dia do ano (mesmo verso o dia todo)
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
+  _currentVerseDayIdx = dayOfYear % _versiculosDoDia.length;
+  const v = _versiculosDoDia[_currentVerseDayIdx];
+  document.getElementById('vd-text').textContent = '"' + v[3] + '"';
+  document.getElementById('vd-ref').textContent = '— ' + v[4];
+  document.getElementById('verse-day-overlay').style.display = 'flex';
+}
+
+function _autoShowVerseDay() {
+  try {
+    const today = new Date().toDateString();
+    const last  = localStorage.getItem('jfa_verseday_shown');
+    if (last !== today) {
+      localStorage.setItem('jfa_verseday_shown', today);
+      setTimeout(showVerseDay, 1200); // após carregar o app
+    }
+  } catch(e) {}
+}
+
+function closeVerseDay() {
+  document.getElementById('verse-day-overlay').style.display = 'none';
+}
+document.getElementById('verse-day-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeVerseDay();
+});
+
+function copyVerseDay() {
+  const v = _versiculosDoDia[_currentVerseDayIdx];
+  const text = v[3] + '\n' + v[4].replace(':', '.');
+  const btn = document.querySelector('.vd-share-btn');
+  try {
+    navigator.clipboard.writeText(text).then(() => {
+      _showCopiedBtn(btn);
+    }).catch(() => {
+      _fallbackCopy(text);
+      _showCopiedBtn(btn);
+    });
+  } catch(e) {
+    _fallbackCopy(text);
+    _showCopiedBtn(btn);
+  }
+}
+
+function _showCopiedBtn(btn) {
+  if (btn) {
+    btn.textContent = '✅ Copiado';
+    setTimeout(() => { btn.textContent = '📋 Copiar'; }, 2000);
+  }
+}
+
+function _fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text; document.body.appendChild(ta);
+  ta.select(); document.execCommand('copy');
+  document.body.removeChild(ta);
+}
+
+// ══════════════════════════════════════════════════
+// BARRA DE PROGRESSO DE LEITURA (scroll)
+// ══════════════════════════════════════════════════
+(function() {
+  var content = document.getElementById('content');
+  if (!content) return;
+  var _scrollSaveTimer = null;
+  content.addEventListener('scroll', function() {
+    var el = this;
+    var pct = el.scrollHeight <= el.clientHeight ? 0 :
+      (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100;
+    var bar = document.getElementById('reading-progress');
+    if (bar) bar.style.width = Math.min(pct, 100) + '%';
+    // Salva posição a cada 1s de inatividade no scroll
+    clearTimeout(_scrollSaveTimer);
+    _scrollSaveTimer = setTimeout(saveSettings, 1000);
+  }, { passive: true });
+})();
+
+// Salvar ao sair / minimizar o app
+window.addEventListener('beforeunload', saveSettings);
+window.addEventListener('pagehide', saveSettings);
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'hidden') saveSettings();
+});
+
+// ══════════════════════════════════════════════════
+// TTS WARM-UP PARA WEBVIEW APK
+// Desbloqueia o audioContext na primeira interação
+// ══════════════════════════════════════════════════
+(function() {
+  let warmedUp = false;
+  function warmUpTTS() {
+    if (warmedUp) return;
+    warmedUp = true;
+    if (typeof window.speechSynthesis !== 'undefined') {
+      try {
+        const u = new SpeechSynthesisUtterance('');
+        u.volume = 0;
+        u.rate = 10;
+        window.speechSynthesis.speak(u);
+        setTimeout(() => {
+          try { window.speechSynthesis.cancel(); } catch(e) {}
+        }, 50);
+      } catch(e) {}
+    }
+    document.removeEventListener('touchstart', warmUpTTS);
+    document.removeEventListener('click', warmUpTTS);
+  }
+  document.addEventListener('touchstart', warmUpTTS, { once: true, passive: true });
+  document.addEventListener('click', warmUpTTS, { once: true });
+})();
+
+// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
+// CAPÍTULOS LIDOS — Progresso por Livro
+// ══════════════════════════════════════════════════
+var chaptersRead = {};
+
+function loadChaptersRead() {
+  try { var s = localStorage.getItem('jfa_chapters_read'); if (s) chaptersRead = JSON.parse(s); } catch(e) {}
+}
+function saveChaptersRead() {
+  try { localStorage.setItem('jfa_chapters_read', JSON.stringify(chaptersRead)); } catch(e) {}
+}
+function markChapterRead(bi, ci) {
+  var key = bi + '-' + ci;
+  chaptersRead[key] = true;
+  saveChaptersRead();
+}
+function isChapterRead(bi, ci) {
+  return !!chaptersRead[bi + '-' + ci];
+}
+function getBookProgress(bi) {
+  if (!bibleData[bi]) return 0;
+  var total = bibleData[bi].chapters.length;
+  var read = 0;
+  for (var i = 0; i < total; i++) {
+    if (chaptersRead[bi + '-' + i]) read++;
+  }
+  return total > 0 ? Math.round((read / total) * 100) : 0;
+}
+
+// Auto-marcar capítulo como lido ao rolar até o final
+(function() {
+  var _markTimer = null;
+  var contentEl = document.getElementById('content');
+  if (!contentEl) return;
+  contentEl.addEventListener('scroll', function() {
+    clearTimeout(_markTimer);
+    _markTimer = setTimeout(function() {
+      var el = contentEl;
+      if (el.scrollHeight <= el.clientHeight) return;
+      var atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 30;
+      if (atBottom) {
+        if (!isChapterRead(currentBook, currentChapter)) {
+          markChapterRead(currentBook, currentChapter);
+          showToast('✓ Capítulo ' + (currentChapter + 1) + ' marcado como lido');
+        }
+      }
+    }, 500);
+  }, { passive: true });
+})();
+
+function vmGoogleAI() {
+  hideVerseMenu();
+  if (selectedVerses.length === 0) { showToast('Selecione um versículo'); return; }
+  const vi   = selectedVerses[0];
+  const book = bibleData[currentBook];
+  const ref  = book ? book.name + ' ' + (currentChapter + 1) + ':' + (vi + 1) : '';
+  const text = (book && book.chapters[currentChapter]) ? book.chapters[currentChapter][vi] : '';
+  const q    = encodeURIComponent(ref + ' ' + text);
+  _openExternal('https://www.google.com/search?q=' + q + '&udm=50');
+  _clearSelection();
+}
+
+function vmWebSearch() {
+  hideVerseMenu();
+  if (selectedVerses.length === 0) { showToast('Selecione um versículo'); return; }
+  const vi   = selectedVerses[0];
+  const book = bibleData[currentBook];
+  const ref  = book ? book.name + ' ' + (currentChapter + 1) + ':' + (vi + 1) : '';
+  const text = (book && book.chapters[currentChapter]) ? book.chapters[currentChapter][vi] : '';
+
+  document.getElementById('ws-ref').textContent   = ref;
+  document.getElementById('ws-verse').textContent = text ? '"' + text + '"' : '';
+  document.getElementById('ws-input').value        = ref + ' bíblia';
+
+  _clearSelection();
+  openPanel('websearch-panel');
+}
+
+let _wsRefCurrent = '';
+let _wsTextCurrent = '';
+
+function _getWsQuery() {
+  return document.getElementById('ws-input').value.trim()
+    || document.getElementById('ws-ref').textContent + ' bíblia';
+}
+
+function _isWebView() {
+  const ua = navigator.userAgent;
+  // Detecta Android WebView APK
+  return /wv/.test(ua) || ((/Android/.test(ua)) && !/Chrome\/[\d]+ Mobile Safari/.test(ua));
+}
+
+function _openExternal(url) {
+  if (_isWebView()) {
+    // APK: Android Intent abre no navegador padrão; ← Voltar retorna ao app
+    const scheme = url.startsWith('https') ? 'https' : 'http';
+    const path   = url.replace(/^https?:\/\//, '');
+    window.location.href = `intent://${path}#Intent;scheme=${scheme};action=android.intent.action.VIEW;end`;
+  } else {
+    // Navegador normal: abre em nova aba
+    window.open(url, '_blank');
+  }
+}
+
+function wsOpen(source) {
+  const q = encodeURIComponent(_getWsQuery());
+  let url;
+  switch(source) {
+    case 'google':
+      url = 'https://www.google.com/search?q=' + q;
+      break;
+    case 'google-ai':
+      // Google AI Mode (Gemini integrado na busca)
+      url = 'https://www.google.com/search?q=' + q + '&udm=50';
+      break;
+    case 'youtube':
+      url = 'https://www.youtube.com/results?search_query=' + q;
+      break;
+    default:
+      url = 'https://www.google.com/search?q=' + q;
+  }
+  _openExternal(url);
+}
+
+function wsGoogle() {
+  _openExternal('https://www.google.com/search?q=' + encodeURIComponent(_getWsQuery()));
+}
+
+function openMenu() {
+  const lbl = document.getElementById('menu-theme-label');
+  if (lbl) lbl.textContent = isLight ? 'Tema Claro / Escuro' : 'Tema Escuro / Claro';
+  // Calcula capítulos lidos no total
+  try {
+    let total = 0, read = 0;
+    bibleData.forEach((book, bi) => {
+      book.chapters.forEach((_, ci) => {
+        total++;
+        if (isChapterRead(bi, ci)) read++;
+      });
+    });
+    const pct = total > 0 ? Math.round((read / total) * 100) : 0;
+    const txt = document.getElementById('menu-progress-text');
+    const fill = document.getElementById('menu-progress-fill');
+    if (txt) txt.textContent = read + ' de ' + total + ' capítulos lidos (' + pct + '%)';
+    if (fill) fill.style.width = pct + '%';
+  } catch(e) {}
+  openPanel('menu-panel');
+}
+
+function openSettings() { openPanel('settings-panel'); }
+
+function changeStatusBarColor(color) {
+  currentStatusBarColor = color;
+
+  // 1. Meta tag — funciona no Chrome/PWA e TWA
+  const meta = document.getElementById('meta-theme-color');
+  if (meta) meta.setAttribute('content', color);
+
+  // 3. Detectar se ícones devem ser claros ou escuros
+  const r = parseInt(color.slice(1,3),16), g = parseInt(color.slice(3,5),16), b = parseInt(color.slice(5,7),16);
+  const luminance = (0.299*r + 0.587*g + 0.114*b) / 255;
+  const iconStyle = luminance > 0.55 ? 'dark' : 'light'; // dark icons on bright bg
+
+  // 4. GoNative / Median.co APK bridge
+  try {
+    if (window.gonative && gonative.statusBar) {
+      gonative.statusBar.set({ color: color, style: iconStyle });
+    }
+  } catch(e) {}
+
+  // 5. Cordova / PhoneGap StatusBar plugin
+  try {
+    if (window.StatusBar) {
+      window.StatusBar.backgroundColorByHexString(color);
+      if (iconStyle === 'dark') window.StatusBar.styleDefault();
+      else window.StatusBar.styleLightContent();
+    }
+  } catch(e) {}
+
+  // 6. Android JavaScript Interface personalizada
+  try {
+    if (window.Android && window.Android.setStatusBarColor) {
+      window.Android.setStatusBarColor(color);
+    }
+  } catch(e) {}
+
+  // 7. CapacitorJS StatusBar plugin
+  try {
+    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.StatusBar) {
+      window.Capacitor.Plugins.StatusBar.setBackgroundColor({ color: color });
+      window.Capacitor.Plugins.StatusBar.setStyle({ style: iconStyle === 'dark' ? 'DARK' : 'LIGHT' });
+    }
+  } catch(e) {}
+
+  // 8. Postmessage para APKs com WebView Bridge
+  try {
+    if (window.ReactNativeWebView) {
+      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'statusBarColor', color, iconStyle }));
+    }
+  } catch(e) {}
+
+  // Atualiza botões ativos
+  document.querySelectorAll('.sb-color-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.color === color);
+  });
+  saveSettings();
+  showToast('Cor da barra: ' + color);
+}
+
+function changeFontSize(delta) {
+  currentFontSize = Math.max(12, Math.min(28, currentFontSize + delta));
+  document.documentElement.style.setProperty('--font-size', currentFontSize + 'px');
+  document.getElementById('font-size-display').textContent = currentFontSize + 'px';
+  saveSettings();
+}
+
+function changeSpacing(delta) {
+  currentSpacing = Math.round((currentSpacing + delta) * 10) / 10;
+  currentSpacing = Math.max(1.2, Math.min(3.0, currentSpacing));
+  document.documentElement.style.setProperty('--line-height', currentSpacing);
+  document.getElementById('spacing-display').textContent = currentSpacing.toFixed(1);
+  saveSettings();
+}
+
+const fontMap = {
+  garamond:   "'EB Garamond', Georgia, serif",
+  notoserif:  "'Noto Serif', Georgia, serif",
+  times:      "'Times New Roman', Times, serif",
+  lato:       "'Lato', Arial, sans-serif",
+  georgia:    "Georgia, serif",
+  palatino:   "Palatino, 'Book Antiqua', serif",
+  cinzel:     "'Cinzel', serif",
+  serif:      "serif",
+  caveat:     "'Caveat', cursive"
+};
+
+function changeFont(key) {
+  currentFont = key;
+  document.documentElement.style.setProperty('--verse-font', fontMap[key]);
+  document.querySelectorAll('.font-choice').forEach(b => {
+    b.classList.toggle('active', b.dataset.font === key);
+  });
+  saveSettings();
+}
+
+function toggleVerseNumbers() {
+  showVerseNums = !showVerseNums;
+  const tog = document.getElementById('toggle-nums');
+  tog.classList.toggle('on', showVerseNums);
+  document.querySelectorAll('.verse-num').forEach(el => {
+    el.style.display = showVerseNums ? '' : 'none';
+  });
+  saveSettings();
+}
+
+function saveSettings() {
+  try {
+    var content = document.getElementById('content');
+    localStorage.setItem('jfa_settings', JSON.stringify({
+      fontSize: currentFontSize,
+      spacing: currentSpacing,
+      font: currentFont,
+      verseNums: showVerseNums,
+      light: isLight,
+      lastBook: currentBook,
+      lastChapter: currentChapter,
+      scrollPos: content ? content.scrollTop : 0,
+      statusBarColor: currentStatusBarColor
+    }));
+  } catch(e){}
+}
+
+function loadSettings() {
+  try {
+    const s = localStorage.getItem('jfa_settings');
+    if (s) {
+      const cfg = JSON.parse(s);
+      if (cfg.fontSize) {
+        currentFontSize = cfg.fontSize;
+        document.documentElement.style.setProperty('--font-size', currentFontSize + 'px');
+        document.getElementById('font-size-display').textContent = currentFontSize + 'px';
+      }
+      if (cfg.spacing) {
+        currentSpacing = cfg.spacing;
+        document.documentElement.style.setProperty('--line-height', currentSpacing);
+        document.getElementById('spacing-display').textContent = currentSpacing.toFixed(1);
+      }
+      if (cfg.font) {
+        currentFont = cfg.font;
+        document.documentElement.style.setProperty('--verse-font', fontMap[currentFont] || fontMap.garamond);
+        document.querySelectorAll('.font-choice').forEach(b => {
+          b.classList.toggle('active', b.dataset.font === currentFont);
+        });
+      }
+      if (cfg.verseNums !== undefined) {
+        showVerseNums = cfg.verseNums;
+        document.getElementById('toggle-nums').classList.toggle('on', showVerseNums);
+      }
+      if (cfg.light) {
+        isLight = true;
+        document.body.classList.add('light');
+        document.getElementById('toggle-theme').classList.add('on');
+      }
+      if (cfg.lastBook !== undefined)    currentBook    = cfg.lastBook;
+      if (cfg.lastChapter !== undefined) currentChapter = cfg.lastChapter;
+      if (cfg.scrollPos !== undefined) _savedScrollPos = cfg.scrollPos;
+      if (cfg.statusBarColor) {
+        currentStatusBarColor = cfg.statusBarColor;
+        const meta = document.getElementById('meta-theme-color');
+        if (meta) meta.setAttribute('content', currentStatusBarColor);
+        document.querySelectorAll('.sb-color-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.color === currentStatusBarColor);
+        });
+      }
+    }
+  } catch(e){}
+}
+
+function toggleTheme() {
+  isLight = !isLight;
+  document.body.classList.toggle('light', isLight);
+  document.getElementById('toggle-theme').classList.toggle('on', isLight);
+  saveSettings();
+  showToast(isLight ? 'Tema claro ativado' : 'Tema escuro ativado');
+}
+
+function enterReadingMode() {
+  // Barra de navegação sempre visível — reading mode desativado
+}
+
+function exitReadingMode() {
+  isReadingMode = false;
+  document.body.classList.remove('reading');
+}
+
+function resetReadingTimer() {
+  // Timer desativado — barra fixa
+  clearTimeout(readingTimer);
+}
+
+// ── PINCH TO ZOOM (dois dedos aumentam/diminuem fonte) ──
+(function() {
+  const el = document.getElementById('content');
+  let startDist = 0, startSize = 18, pinching = false;
+
+  function dist(touches) {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  el.addEventListener('touchstart', e => {
+    if (e.touches.length === 2) {
+      pinching = true;
+      startDist = dist(e.touches);
+      startSize = currentFontSize;
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  el.addEventListener('touchmove', e => {
+    if (!pinching || e.touches.length !== 2) return;
+    e.preventDefault();
+    const ratio = dist(e.touches) / startDist;
+    const newSize = Math.round(Math.max(12, Math.min(30, startSize * ratio)));
+    if (newSize !== currentFontSize) {
+      currentFontSize = newSize;
+      document.documentElement.style.setProperty('--font-size', newSize + 'px');
+      const disp = document.getElementById('font-size-display');
+      if (disp) disp.textContent = newSize + 'px';
+      // Mini toast só na mudança
+      clearTimeout(_pinchToast);
+      _pinchToast = setTimeout(() => showToast('Fonte: ' + newSize + 'px'), 600);
+    }
+  }, { passive: false });
+
+  el.addEventListener('touchend', e => {
+    if (e.touches.length < 2) {
+      if (pinching) { saveSettings(); }
+      pinching = false;
+    }
+  }, { passive: true });
+})();
+let _pinchToast = null;
+
+// ── REFERÊNCIAS CRUZADAS ─────────────────────────────────────────────────
+const _crAbbr = {
+  'Gn':0,'Ex':1,'Lv':2,'Nm':3,'Dt':4,'Js':5,'Jz':6,'Rt':7,'1Sm':8,'2Sm':9,
+  '1Rs':10,'2Rs':11,'1Cr':12,'2Cr':13,'Ed':14,'Ne':15,'Et':16,'Jó':17,'Sl':18,
+  'Pv':19,'Ec':20,'Ct':21,'Is':22,'Jr':23,'Lm':24,'Ez':25,'Dn':26,'Os':27,
+  'Jl':28,'Am':29,'Ob':30,'Jn':31,'Mq':32,'Na':33,'Hc':34,'Sf':35,'Ag':36,
+  'Zc':37,'Ml':38,'Mt':39,'Mc':40,'Lc':41,'Jo':42,'At':43,'Rm':44,'1Co':45,
+  '2Co':46,'Gl':47,'Ef':48,'Fp':49,'Cl':50,'1Ts':51,'2Ts':52,'1Tm':53,'2Tm':54,
+  'Tt':55,'Fm':56,'Hb':57,'Tg':58,'1Pe':59,'2Pe':60,'1Jo':61,'2Jo':62,'3Jo':63,
+  'Jd':64,'Ap':65
+};
+const _crossRefDB = {
+  // ══ GÊNESIS ══
+  'Gn 1:1':['Jo 1:1','Hb 11:3','Cl 1:16','Sl 33:6','Is 45:18'],
+  'Gn 1:3':['2Co 4:6','Sl 33:9','Jo 1:4','Is 9:2','Mt 4:16'],
+  'Gn 1:26':['Sl 8:5','Gn 9:6','1Co 11:7','Ef 4:24','Cl 3:10'],
+  'Gn 1:27':['Gn 5:1','Cl 3:10','Ef 4:24','1Co 11:7','Gn 9:6'],
+  'Gn 2:24':['Mt 19:5','Ef 5:31','Mc 10:7','1Co 6:16','Ml 2:15'],
+  'Gn 3:15':['Is 7:14','Gl 3:16','Rm 16:20','Ap 12:17','Jo 8:44'],
+  'Gn 12:3':['Gl 3:8','At 3:25','Gn 22:18','Rm 4:3','Hb 11:8'],
+  'Gn 15:6':['Rm 4:3','Gl 3:6','Tg 2:23','Hb 11:17','Rm 4:9'],
+  'Gn 18:14':['Jr 32:17','Lc 1:37','Mt 19:26','Jó 42:2','Mc 10:27'],
+  'Gn 22:2':['Hb 11:17','Jo 3:16','Rm 8:32','1Jo 4:9','Tg 2:21'],
+  'Gn 28:15':['Hb 13:5','Is 41:10','Mt 28:20','Js 1:5','Sl 46:1'],
+  'Gn 50:20':['Rm 8:28','Sl 76:10','Is 46:10','At 2:23','Fp 1:12'],
+  // ══ ÊXODO ══
+  'Ex 3:14':['Jo 8:58','Ap 1:8','Is 43:10','Jo 6:35','Hb 13:8'],
+  'Ex 12:13':['1Co 5:7','1Pe 1:19','Jo 1:29','Hb 9:14','Ap 5:9'],
+  'Ex 14:14':['Sl 46:10','Dt 20:4','Is 30:15','2Cr 20:17','Rm 8:31'],
+  'Ex 20:3':['Dt 5:7','Mt 4:10','Lc 4:8','At 17:29','Is 44:6'],
+  'Ex 20:12':['Ef 6:2','Cl 3:20','Pv 23:22','Mt 15:4','Mc 7:10'],
+  'Ex 33:14':['Mt 11:28','Is 63:9','Dt 31:8','Js 1:9','2Ts 3:16'],
+  // ══ LEVÍTICO ══
+  'Lv 11:44':['1Pe 1:16','Lv 20:7','Hb 12:14','Mt 5:48','1Ts 4:7'],
+  'Lv 19:18':['Mt 22:39','Mc 12:31','Rm 13:9','Gl 5:14','Tg 2:8'],
+  // ══ NÚMEROS ══
+  'Nm 6:24':['Sl 67:1','Sl 121:7','Jr 31:3','Fp 4:7','Jd 24'],
+  'Nm 23:19':['Ml 3:6','Tg 1:17','1Sm 15:29','Hb 6:18','Tt 1:2'],
+  // ══ DEUTERONÔMIO ══
+  'Dt 6:4':['Mc 12:29','1Co 8:4','Is 44:6','Ef 4:6','Rm 3:30'],
+  'Dt 6:5':['Mt 22:37','Mc 12:30','Lc 10:27','Rm 8:28','1Jo 5:3'],
+  'Dt 7:9':['1Co 1:9','1Ts 5:24','2Tm 2:13','Sl 89:1','Lm 3:22'],
+  'Dt 8:3':['Mt 4:4','Lc 4:4','Jo 6:35','Am 8:11','Is 55:2'],
+  'Dt 31:6':['Hb 13:5','Js 1:9','Is 41:10','Sl 27:1','Rm 8:31'],
+  'Dt 31:8':['Js 1:5','Gn 28:15','Mt 28:20','Is 41:13','Sl 23:4'],
+  'Dt 33:27':['Sl 90:1','Is 26:4','Sl 91:4','Rm 8:38','Jo 10:29'],
+  // ══ JOSUÉ ══
+  'Js 1:7':['Dt 5:32','Pv 4:27','Sl 1:2','2Tm 3:16','Sl 119:1'],
+  'Js 1:8':['Sl 1:2','Sl 119:1','Sl 119:11','Dt 17:19','Pv 4:20'],
+  'Js 1:9':['Dt 31:6','Is 41:10','Sl 27:1','Hb 13:6','2Tm 1:7'],
+  'Js 24:15':['Dt 30:19','Mt 6:24','1Rs 18:21','Jz 5:23','Sl 119:30'],
+  // ══ JUÍZES ══
+  'Jz 6:12':['Gn 26:3','Is 41:10','Mt 28:20','Lc 1:28','Jr 1:8'],
+  // ══ RUTE ══
+  'Rt 1:16':['Pv 17:17','Jo 15:13','1Sm 20:17','Rm 12:10','Cl 3:14'],
+  // ══ 1 SAMUEL ══
+  '1Sm 2:2':['Ex 15:11','Sl 86:8','Is 40:25','Ap 15:4','Sl 99:9'],
+  '1Sm 15:22':['Os 6:6','Sl 51:16','Mc 12:33','Is 1:11','Mq 6:8'],
+  '1Sm 16:7':['Pv 21:2','Lc 16:15','Jo 7:24','Sl 139:1','Hb 4:13'],
+  // ══ 2 SAMUEL ══
+  '2Sm 7:12':['At 2:30','Sl 89:4','Is 9:7','Mt 1:1','Ap 22:16'],
+  // ══ 1 REIS ══
+  '1Rs 8:27':['At 7:48','Is 66:1','At 17:24','2Cr 6:18','Jr 23:24'],
+  '1Rs 18:21':['Js 24:15','Mt 6:24','Rm 8:6','Tg 4:4','Ap 3:15'],
+  '1Rs 19:12':['Sl 46:10','Jo 14:27','Sl 23:2','Is 30:15','Mt 11:29'],
+  // ══ 2 REIS ══
+  '2Rs 6:17':['Sl 34:7','Hb 1:14','Dn 6:22','Mt 26:53','Ap 5:11'],
+  // ══ 1 CRÔNICAS ══
+  '1Cr 16:34':['Sl 106:1','Sl 107:1','Sl 136:1','Sl 118:1','2Cr 5:13'],
+  '1Cr 28:9':['Mt 6:33','Jr 29:13','Dt 4:29','At 17:27','Pv 8:17'],
+  // ══ 2 CRÔNICAS ══
+  '2Cr 7:14':['Sl 32:5','1Jo 1:9','Jl 2:13','Jr 29:13','Dt 4:29'],
+  '2Cr 20:17':['Ex 14:14','Sl 46:1','Is 30:15','Rm 8:31','2Ts 3:3'],
+  // ══ ESDRAS ══
+  'Ed 1:1':['Is 44:28','Is 45:1','Jr 29:10','At 1:7','Dn 9:2'],
+  // ══ NEEMIAS ══
+  'Ne 8:10':['Sl 28:7','Is 12:2','Rm 15:13','Fp 4:4','1Ts 5:16'],
+  // ══ ESTER ══
+  'Et 4:14':['Rm 8:28','Gn 50:20','Is 45:1','Fp 1:12','Jr 29:11'],
+  // ══ JÓ ══
+  'Jó 1:21':['Ec 5:15','1Tm 6:7','Sl 34:1','Hb 13:15','Fp 4:11'],
+  'Jó 13:15':['Dn 3:18','Rm 8:38','Sl 73:26','Hb 11:1','2Co 4:8'],
+  'Jó 19:25':['1Co 15:20','Rm 8:11','Jo 11:25','Dn 12:2','Is 26:19'],
+  'Jó 42:2':['Gn 18:14','Lc 1:37','Jr 32:17','Mt 19:26','Sl 115:3'],
+  // ══ SALMOS ══
+  'Sl 1:1':['Pv 1:10','Jr 15:17','Sl 119:1','Rm 12:2','2Co 6:14'],
+  'Sl 1:2':['Js 1:8','Sl 119:97','Cl 3:16','Fp 4:8','Dt 17:19'],
+  'Sl 1:3':['Jr 17:8','Ez 47:12','Ap 22:2','Sl 52:8','Is 58:11'],
+  'Sl 8:4':['Hb 2:6','Jó 7:17','Sl 144:3','Is 40:15','1Cr 29:14'],
+  'Sl 16:8':['At 2:25','Jo 14:3','Sl 73:23','Rm 8:38','Hb 13:5'],
+  'Sl 18:2':['Sl 91:2','Sl 62:2','2Sm 22:2','Is 26:4','Na 1:7'],
+  'Sl 19:1':['Rm 1:20','Sl 97:6','At 14:17','Is 40:26','Hb 1:2'],
+  'Sl 22:1':['Mt 27:46','Mc 15:34','Is 53:4','Lm 1:12','Sl 88:14'],
+  'Sl 23:1':['Ez 34:11','Is 40:11','Jo 10:11','Sl 100:3','Hb 13:20'],
+  'Sl 23:4':['Is 43:2','Is 41:10','Dt 31:8','Rm 8:38','Mt 28:20'],
+  'Sl 27:1':['Is 12:2','Jó 29:3','1Jo 1:5','Sl 56:11','Hb 13:6'],
+  'Sl 27:14':['Is 40:31','Sl 37:7','Lm 3:26','Pv 20:22','Rm 8:25'],
+  'Sl 31:15':['Sl 139:16','Jó 14:5','At 17:26','Fp 1:21','Dn 5:23'],
+  'Sl 32:1':['Rm 4:7','Sl 130:4','At 13:38','Cl 1:14','Ef 1:7'],
+  'Sl 34:7':['2Rs 6:17','Mt 18:10','Hb 1:14','Sl 91:11','Dn 6:22'],
+  'Sl 34:18':['Is 57:15','Is 61:1','Sl 51:17','Mt 5:3','Lc 4:18'],
+  'Sl 37:3':['Pv 3:5','Is 26:3','Sl 62:8','Jr 17:7','Na 1:7'],
+  'Sl 37:4':['Mt 6:33','Sl 21:2','Pv 10:24','Jo 15:7','1Jo 3:22'],
+  'Sl 37:5':['Pv 16:3','Sl 55:22','1Pe 5:7','Pv 3:6','Jr 17:7'],
+  'Sl 40:8':['Jo 4:34','Sl 143:10','Mt 26:39','Hb 10:7','Jo 6:38'],
+  'Sl 42:1':['Sl 63:1','Jo 7:37','Is 55:1','Ap 21:6','Jr 2:13'],
+  'Sl 46:1':['Sl 91:1','Is 26:3','Na 1:7','Rm 8:31','Jr 17:7'],
+  'Sl 46:10':['Ex 14:14','Is 30:15','1Rs 19:12','Sl 23:2','Lm 3:26'],
+  'Sl 51:1':['Lc 18:13','Is 1:18','1Jo 1:9','Rm 5:20','Mq 7:18'],
+  'Sl 51:10':['Ez 36:26','Jr 24:7','Sl 139:23','1Co 5:17','Jo 3:5'],
+  'Sl 51:17':['Is 57:15','Is 66:2','Sl 34:18','Mt 5:3','Lm 3:22'],
+  'Sl 55:22':['1Pe 5:7','Sl 37:5','Fp 4:6','Mt 6:25','Is 46:4'],
+  'Sl 62:1':['Sl 46:10','Sl 27:14','Is 30:15','Lm 3:26','Hb 4:9'],
+  'Sl 62:8':['Jr 17:7','Pv 3:5','Sl 37:3','Sl 55:22','1Pe 5:7'],
+  'Sl 63:1':['Sl 42:1','Jo 7:37','Is 55:1','Sl 143:6','Ap 21:6'],
+  'Sl 84:10':['Fp 1:23','Sl 27:4','Sl 65:4','Ec 7:2','Is 26:8'],
+  'Sl 84:11':['Rm 8:28','Tg 1:17','Is 60:19','Jo 8:12','Ml 4:2'],
+  'Sl 86:5':['Sl 103:8','Ex 34:6','Jl 2:13','Ne 9:17','Sl 145:8'],
+  'Sl 90:12':['Ec 7:2','Sl 39:4','Ef 5:16','Pv 16:9','Tg 4:14'],
+  'Sl 91:1':['Sl 27:5','Sl 46:1','Dt 33:27','Is 26:3','Jr 17:7'],
+  'Sl 91:4':['Dt 33:27','Sl 17:8','Rt 2:12','Is 31:5','Mt 23:37'],
+  'Sl 91:11':['Sl 34:7','Hb 1:14','Mt 4:6','Dn 6:22','Gn 24:7'],
+  'Sl 100:1':['Sl 98:4','Fp 4:4','1Ts 5:16','Sl 150:1','Ef 5:19'],
+  'Sl 100:3':['Sl 23:1','Jo 10:14','Ez 34:31','Is 40:11','1Pe 2:25'],
+  'Sl 103:2':['Sl 34:1','Sl 116:12','Ef 1:3','1Ts 5:18','Sl 68:19'],
+  'Sl 103:8':['Ex 34:6','Sl 86:15','Jl 2:13','Ne 9:17','Sl 145:8'],
+  'Sl 103:12':['Is 38:17','Is 43:25','Mq 7:19','Jr 31:34','Hb 10:17'],
+  'Sl 103:13':['Is 63:16','Jr 31:9','Lc 15:20','Mt 7:11','2Co 6:18'],
+  'Sl 107:1':['1Cr 16:34','Sl 106:1','Sl 136:1','Sl 118:1','2Cr 5:13'],
+  'Sl 107:9':['Is 55:1','Jo 6:35','Jo 7:37','Sl 42:1','Mt 5:6'],
+  'Sl 116:15':['Sl 72:14','Ap 14:13','Is 57:1','1Co 15:55','2Tm 4:6'],
+  'Sl 118:6':['Rm 8:31','Hb 13:6','Sl 56:11','Is 51:12','Sl 27:1'],
+  'Sl 118:24':['Sl 32:11','Fp 4:4','1Ts 5:16','Rm 12:12','Lm 3:22'],
+  'Sl 119:9':['Sl 119:11','Jo 17:17','Ef 5:26','Tt 3:5','1Pe 1:22'],
+  'Sl 119:11':['Sl 119:9','Jo 17:17','Sl 37:31','Dt 6:6','Sl 40:8'],
+  'Sl 119:105':['Sl 19:8','Pv 6:23','2Pe 1:19','Is 8:20','Jo 17:17'],
+  'Sl 119:160':['Jo 17:17','Sl 19:9','Jo 3:33','Ap 19:9','Nm 23:19'],
+  'Sl 121:1':['Sl 124:8','Sl 46:1','Is 40:26','Jr 10:12','Sl 146:5'],
+  'Sl 121:7':['Nm 6:24','Jo 17:15','2Ts 3:3','1Pe 1:5','Jd 24'],
+  'Sl 130:4':['Sl 32:1','Rm 4:7','Ne 9:17','Is 55:7','Jr 31:34'],
+  'Sl 139:1':['1Sm 16:7','Hb 4:13','Jr 17:10','Jb 34:21','Jo 21:17'],
+  'Sl 139:14':['Gn 1:27','Sl 8:5','Lc 1:44','Jr 1:5','Is 43:1'],
+  'Sl 139:23':['Sl 51:10','Jr 17:10','1Co 11:28','2Co 13:5','Sl 26:2'],
+  'Sl 143:10':['Sl 40:8','Jo 4:34','Mt 7:21','Ef 5:17','Rm 12:2'],
+  'Sl 145:8':['Ex 34:6','Sl 86:15','Sl 103:8','Jl 2:13','Ne 9:17'],
+  'Sl 145:18':['Jr 29:12','Sl 50:15','Jo 4:23','Rm 10:13','Mt 7:7'],
+  'Sl 146:5':['Sl 121:2','Jr 17:7','Pv 3:26','Is 30:18','Rm 15:13'],
+  // ══ PROVÉRBIOS ══
+  'Pv 1:7':['Jó 28:28','Sl 111:10','Is 8:13','Cl 2:3','Ec 12:13'],
+  'Pv 3:5':['Is 26:3','Jr 17:5','Sl 37:5','Pv 16:3','Tg 1:5'],
+  'Pv 3:6':['Sl 37:5','Is 45:2','Rm 8:28','Pv 16:9','Jr 10:23'],
+  'Pv 3:9':['Ml 3:10','Lc 6:38','2Co 9:6','Dt 14:22','Pv 11:24'],
+  'Pv 4:23':['Mt 15:19','Lc 6:45','Rm 10:10','Mc 7:21','Hb 4:12'],
+  'Pv 11:14':['Pv 15:22','Pv 24:6','Lc 14:31','Ef 5:15','Pv 20:18'],
+  'Pv 13:20':['1Co 15:33','Pv 22:24','Sl 1:1','2Co 6:14','1Co 5:11'],
+  'Pv 16:3':['Sl 37:5','Pv 3:5','Pv 19:21','Mt 6:33','Rm 8:28'],
+  'Pv 17:17':['Rt 1:16','Jo 15:13','1Sm 20:17','Rm 12:10','Cl 3:14'],
+  'Pv 18:10':['Sl 18:2','Na 1:7','Is 26:4','Sl 91:2','Pv 14:26'],
+  'Pv 18:21':['Mt 12:37','Tg 3:6','Ef 4:29','Pv 21:23','1Pe 3:10'],
+  'Pv 19:21':['Sl 33:11','Is 46:10','Lm 3:37','Pv 16:9','Jr 29:11'],
+  'Pv 22:6':['Dt 6:7','Ef 6:4','Cl 3:21','2Tm 3:15','Is 28:9'],
+  'Pv 27:1':['Tg 4:13','Lc 12:20','Mt 6:34','1Co 4:7','Ec 9:12'],
+  'Pv 28:13':['1Jo 1:9','Sl 32:5','Sl 28:13','Lv 26:40','Ne 9:2'],
+  // ══ ECLESIASTES ══
+  'Ec 3:1':['Sl 31:15','At 1:7','Gl 4:4','Dn 2:21','Ec 3:11'],
+  'Ec 3:11':['Rm 11:36','Gn 1:31','Sl 104:24','Ap 4:11','Cl 1:16'],
+  'Ec 12:13':['Dt 10:12','Pv 1:7','Mq 6:8','At 17:30','Mt 22:37'],
+  // ══ CANTARES ══
+  'Ct 2:4':['Jo 13:34','Rm 8:38','1Jo 4:16','Ef 3:18','Is 54:10'],
+  // ══ ISAÍAS ══
+  'Is 1:18':['Sl 51:1','1Jo 1:9','Rm 5:20','Mq 7:19','Rm 8:1'],
+  'Is 6:3':['Ap 4:8','Ap 15:4','Sl 99:3','Is 57:15','Sl 111:9'],
+  'Is 6:8':['Mt 28:19','Is 58:1','At 26:19','Jr 1:7','Ez 2:3'],
+  'Is 7:14':['Mt 1:22','Lc 1:27','Mt 1:18','Is 9:6','Mq 5:2'],
+  'Is 9:6':['Is 7:14','Lc 2:11','Jo 1:1','Is 11:1','Mt 1:23'],
+  'Is 25:8':['Ap 21:4','1Co 15:54','Is 65:19','Rm 8:18','Ap 7:17'],
+  'Is 26:3':['Sl 91:1','Fp 4:7','Jo 14:27','Sl 46:1','Jr 17:7'],
+  'Is 26:4':['Sl 18:2','Sl 62:2','Na 1:7','Pv 18:10','Dt 33:27'],
+  'Is 40:8':['1Pe 1:23','Sl 119:89','Mt 24:35','Sl 119:160','Jo 17:17'],
+  'Is 40:11':['Ez 34:11','Jo 10:11','Sl 23:1','Sl 100:3','1Pe 2:25'],
+  'Is 40:28':['Rm 11:33','Sl 147:5','Sl 90:2','Jó 9:4','Jr 32:17'],
+  'Is 40:29':['Is 40:31','2Co 12:9','Fp 4:13','Sl 29:11','Is 41:10'],
+  'Is 40:31':['Sl 27:14','Jr 31:25','Mt 11:28','Fp 4:13','Is 41:10'],
+  'Is 41:10':['Js 1:9','Sl 23:4','Jr 1:8','Is 40:31','Rm 8:31'],
+  'Is 41:13':['Gn 28:15','Is 41:10','Mt 28:20','Dt 31:8','Jo 14:18'],
+  'Is 43:1':['Jo 10:3','Lc 1:28','Sl 139:14','Is 44:2','Jo 15:16'],
+  'Is 43:2':['Sl 23:4','Is 41:10','Dn 3:25','Hc 3:17','Rm 8:35'],
+  'Is 43:25':['Sl 103:12','Mq 7:19','Jr 31:34','Hb 10:17','Rm 8:1'],
+  'Is 45:22':['Jo 3:16','At 4:12','Rm 10:13','1Tm 2:4','Ez 18:23'],
+  'Is 46:10':['Dn 4:35','Sl 115:3','Sl 33:11','Ef 1:11','Rm 11:36'],
+  'Is 53:3':['Sl 22:6','Mt 27:39','Jo 1:11','Hb 12:2','Is 53:4'],
+  'Is 53:4':['Mt 8:17','1Pe 2:24','Is 53:5','Is 53:11','Hb 9:28'],
+  'Is 53:5':['1Pe 2:24','Is 53:6','Rm 5:8','2Co 5:21','Hb 9:28'],
+  'Is 53:6':['Jo 1:29','Sl 119:176','Rm 5:12','Is 53:5','1Pe 2:25'],
+  'Is 53:11':['Jo 3:36','Rm 5:19','Gl 2:16','Hb 9:28','Is 53:4'],
+  'Is 55:1':['Jo 7:37','Ap 22:17','Jo 6:35','Is 55:3','Mt 11:28'],
+  'Is 55:6':['Jr 29:13','Sl 145:18','At 17:27','Lm 3:57','Am 5:4'],
+  'Is 55:8':['Rm 11:33','Is 55:9','1Co 2:9','Jó 11:7','Is 40:28'],
+  'Is 55:11':['Is 46:10','Sl 33:9','Sl 147:15','Ez 12:25','Jo 15:7'],
+  'Is 57:15':['Sl 51:17','Sl 34:18','Mt 5:3','Is 66:2','Lc 18:14'],
+  'Is 58:6':['Lc 4:18','Mt 25:35','Tg 2:14','1Jo 3:17','Mq 6:8'],
+  'Is 61:1':['Lc 4:18','Is 58:6','Mt 11:5','At 10:38','Is 42:7'],
+  'Is 61:10':['Gl 3:27','Rm 13:14','Ap 3:5','Sl 132:16','Is 62:5'],
+  'Is 64:6':['Rm 3:23','Gl 2:16','Is 57:12','Ez 7:20','Tg 2:10'],
+  'Is 65:17':['2Pe 3:13','Ap 21:1','Is 66:22','Rm 8:19','2Co 5:17'],
+  // ══ JEREMIAS ══
+  'Jr 1:5':['Sl 139:13','Gl 1:15','Is 49:1','Ef 1:4','Jr 1:9'],
+  'Jr 1:8':['Is 41:10','Js 1:9','Mt 28:20','Rm 8:31','At 18:10'],
+  'Jr 17:7':['Sl 84:12','Pv 3:5','Is 26:3','Na 1:7','Sl 37:3'],
+  'Jr 17:9':['Mc 7:21','Gn 6:5','Is 1:5','Rm 7:18','Hb 3:12'],
+  'Jr 29:11':['Rm 8:28','Pv 16:9','Is 46:10','Sl 33:11','Jr 31:3'],
+  'Jr 29:12':['Sl 145:18','Mt 7:7','Lc 11:9','Jo 14:13','Jr 33:3'],
+  'Jr 29:13':['Dt 4:29','Pv 8:17','1Cr 28:9','Lm 3:25','Mt 7:7'],
+  'Jr 31:3':['Os 11:4','Rm 8:38','Is 54:10','Ef 3:18','1Jo 4:8'],
+  'Jr 31:31':['Hb 8:8','Mt 26:28','Hb 10:16','Ez 36:26','2Co 3:6'],
+  'Jr 31:34':['Hb 8:12','Hb 10:17','Sl 103:12','Is 43:25','Mq 7:19'],
+  'Jr 33:3':['Jr 29:12','Mt 7:7','Sl 145:18','Sl 50:15','Jo 15:7'],
+  // ══ LAMENTAÇÕES ══
+  'Lm 3:22':['Sl 118:24','Sl 36:5','Is 54:10','1Jo 4:8','Rm 8:38'],
+  'Lm 3:23':['Lm 3:22','Sl 92:2','Sl 143:8','Is 33:2','Mt 6:34'],
+  'Lm 3:25':['Sl 27:14','Jr 29:13','Is 40:31','Sl 62:1','Hb 11:6'],
+  'Lm 3:26':['Sl 46:10','Sl 62:1','Is 30:15','Hb 4:9','Sl 27:14'],
+  // ══ EZEQUIEL ══
+  'Ez 18:32':['2Pe 3:9','1Tm 2:4','Is 45:22','Ez 33:11','At 17:30'],
+  'Ez 34:11':['Jo 10:11','Sl 23:1','Is 40:11','Sl 100:3','Lc 15:4'],
+  'Ez 36:26':['Jr 31:31','Jo 3:5','2Co 5:17','Sl 51:10','Ez 11:19'],
+  // ══ DANIEL ══
+  'Dn 2:44':['Lc 1:33','Ap 11:15','Dn 7:14','Is 9:7','Mt 3:2'],
+  'Dn 3:17':['Jó 13:15','Hc 3:17','Rm 8:38','Dn 3:18','At 5:29'],
+  'Dn 6:10':['Sl 55:17','1Ts 5:17','Lc 18:1','At 3:1','Fp 4:6'],
+  'Dn 9:3':['Jl 2:12','1Rs 21:27','Lc 18:13','Rm 3:23','Ne 1:4'],
+  // ══ OSÉIAS ══
+  'Os 6:6':['1Sm 15:22','Sl 51:16','Mc 12:33','Is 1:11','Mq 6:8'],
+  'Os 11:1':['Mt 2:15','Gn 47:4','Ex 4:22','Jr 31:9','Is 11:11'],
+  // ══ JOEL ══
+  'Jl 2:13':['Ex 34:6','Sl 86:15','Sl 103:8','Ne 9:17','Jn 4:2'],
+  'Jl 2:28':['At 2:17','Is 44:3','Ez 39:29','Zc 12:10','1Co 12:13'],
+  // ══ AMÓS ══
+  'Am 3:3':['2Co 6:14','1Co 15:33','Pv 13:20','Jo 17:14','Gl 5:9'],
+  // ══ JONAS ══
+  'Jn 2:9':['Sl 3:8','Sl 37:39','Is 12:2','At 4:12','Ef 2:8'],
+  // ══ MIQUÉIAS ══
+  'Mq 5:2':['Mt 2:6','Lc 2:4','Jo 7:42','Is 7:14','Is 9:6'],
+  'Mq 6:8':['Os 6:6','1Sm 15:22','Sl 51:16','Dt 10:12','Zc 8:16'],
+  // ══ NAUM ══
+  'Na 1:7':['Sl 91:2','Sl 18:2','Is 26:4','Pv 18:10','Sl 46:1'],
+  // ══ HABACUQUE ══
+  'Hc 2:4':['Rm 1:17','Gl 3:11','Hb 10:38','Jo 3:36','Rm 5:1'],
+  'Hc 3:17':['Jó 13:15','Dn 3:17','Rm 8:38','Fp 4:11','2Co 6:10'],
+  // ══ SOFONIAS ══
+  'Sf 3:17':['Sl 149:4','Is 62:5','Jr 31:3','Sl 35:27','Is 66:19'],
+  // ══ AGEU ══
+  'Ag 2:4':['Js 1:9','1Co 15:58','2Cr 15:7','Sl 31:24','Is 35:4'],
+  // ══ ZACARIAS ══
+  'Zc 8:16':['Ef 4:25','Cl 3:9','Zc 7:9','Mq 6:8','Rm 12:17'],
+  'Zc 9:9':['Mt 21:5','Jo 12:15','Mt 21:4','Lc 19:38','Mc 11:7'],
+  // ══ MALAQUIAS ══
+  'Ml 3:6':['Tg 1:17','Hb 13:8','Nm 23:19','Sl 102:27','Is 46:4'],
+  'Ml 3:10':['Pv 3:9','Lc 6:38','2Co 9:6','Dt 28:2','Pv 11:24'],
+  // ══ MATEUS ══
+  'Mt 1:23':['Is 7:14','Is 9:6','Lc 1:27','Jo 1:1','Gl 4:4'],
+  'Mt 3:17':['Mc 1:11','Lc 3:22','Is 42:1','2Pe 1:17','Jo 12:28'],
+  'Mt 4:4':['Dt 8:3','Jo 6:35','Am 8:11','Is 55:2','Jr 15:16'],
+  'Mt 5:3':['Lc 6:20','Sl 34:18','Is 57:15','Mt 18:3','Tg 4:6'],
+  'Mt 5:6':['Jo 6:35','Is 55:1','Sl 107:9','Jo 7:37','Ap 21:6'],
+  'Mt 5:8':['Sl 24:3','Hb 12:14','1Co 13:12','1Jo 3:2','Sl 51:10'],
+  'Mt 5:14':['Jo 8:12','Jo 9:5','Fp 2:15','Is 60:1','Ef 5:8'],
+  'Mt 5:44':['Lc 6:27','Rm 12:20','Pv 25:21','Ex 23:4','Lc 23:34'],
+  'Mt 5:48':['Lv 11:44','1Pe 1:16','Gn 17:1','Dt 18:13','Hb 12:14'],
+  'Mt 6:6':['Jo 4:23','Mt 14:23','Lc 9:28','Mc 1:35','Mt 26:36'],
+  'Mt 6:9':['Lc 11:2','Jo 17:1','Sl 103:13','Is 63:16','Rm 8:15'],
+  'Mt 6:14':['Mt 18:35','Mc 11:25','Lc 6:37','Ef 4:32','Cl 3:13'],
+  'Mt 6:24':['Lc 16:13','Js 24:15','1Rs 18:21','Tg 4:4','1Jo 2:15'],
+  'Mt 6:25':['Fp 4:6','1Pe 5:7','Sl 55:22','Lc 12:22','Mt 6:33'],
+  'Mt 6:33':['Sl 37:4','Pv 3:6','Rm 14:17','Lc 12:31','Sl 34:9'],
+  'Mt 7:7':['Lc 11:9','Jo 14:13','Jr 29:12','Mt 21:22','Sl 145:18'],
+  'Mt 7:12':['Lc 6:31','Rm 13:9','Lv 19:18','Mt 22:40','Gl 5:14'],
+  'Mt 7:14':['Mt 22:14','Lc 13:24','At 14:22','Rm 8:17','Fp 3:14'],
+  'Mt 7:21':['Mt 25:11','Sl 143:10','Jo 4:34','Lc 6:46','1Jo 2:17'],
+  'Mt 10:28':['Lc 12:4','Is 51:12','Sl 56:11','Rm 8:31','Hb 13:6'],
+  'Mt 11:28':['Is 55:1','Jr 31:25','Sl 55:22','1Pe 5:7','Is 40:31'],
+  'Mt 11:29':['1Rs 19:12','1Jo 2:29','Jo 14:27','Sl 23:2','Fp 4:7'],
+  'Mt 16:24':['Lc 9:23','Mc 8:34','Jo 12:26','Gl 2:20','Rm 6:6'],
+  'Mt 18:3':['Mt 5:3','Mc 10:15','Lc 18:17','1Co 14:20','Sl 131:2'],
+  'Mt 18:20':['Jo 14:23','Hb 10:25','At 20:7','Ef 3:17','Mt 28:20'],
+  'Mt 19:26':['Gn 18:14','Lc 1:37','Jr 32:17','Jó 42:2','Mc 10:27'],
+  'Mt 22:37':['Dt 6:5','Mc 12:30','Lc 10:27','Rm 8:28','1Jo 5:3'],
+  'Mt 22:39':['Lv 19:18','Mc 12:31','Rm 13:9','Gl 5:14','Tg 2:8'],
+  'Mt 25:35':['Is 58:6','1Jo 3:17','Tg 2:14','Pv 19:17','Dt 15:7'],
+  'Mt 25:40':['Pv 19:17','Hb 6:10','1Jo 3:17','1Co 12:26','Mt 10:42'],
+  'Mt 26:28':['Jr 31:31','Hb 9:20','Is 53:12','Lc 22:20','1Co 11:25'],
+  'Mt 28:18':['Jo 17:2','Dn 7:14','Ef 1:21','Fp 2:9','1Pe 3:22'],
+  'Mt 28:19':['Mc 16:15','At 1:8','Jo 20:21','Lc 24:47','Rm 10:14'],
+  'Mt 28:20':['Jo 14:18','Gn 28:15','Hb 13:5','Is 41:10','Mt 18:20'],
+  // ══ MARCOS ══
+  'Mc 1:15':['Mt 3:2','Mt 4:17','Lc 4:18','At 2:38','Ef 1:7'],
+  'Mc 10:27':['Gn 18:14','Lc 1:37','Jr 32:17','Jó 42:2','Mt 19:26'],
+  'Mc 12:29':['Dt 6:4','1Co 8:4','Is 44:6','Ef 4:6','Rm 3:30'],
+  'Mc 12:30':['Dt 6:5','Mt 22:37','Lc 10:27','Rm 8:28','1Jo 5:3'],
+  // ══ LUCAS ══
+  'Lc 1:37':['Gn 18:14','Jr 32:17','Jó 42:2','Mt 19:26','Mc 10:27'],
+  'Lc 1:78':['Ml 4:2','Is 60:1','Sl 84:11','Jo 1:4','2Pe 1:19'],
+  'Lc 2:11':['Is 9:6','Jo 4:42','At 5:31','Fp 3:20','Mt 1:21'],
+  'Lc 4:18':['Is 61:1','Is 58:6','Mt 11:5','At 10:38','Is 42:7'],
+  'Lc 6:27':['Mt 5:44','Rm 12:20','Pv 25:21','Ex 23:4','Lc 23:34'],
+  'Lc 6:38':['Pv 3:9','Ml 3:10','2Co 9:6','Pv 11:24','Dt 28:2'],
+  'Lc 9:23':['Mt 16:24','Mc 8:34','Jo 12:26','Gl 2:20','Rm 6:6'],
+  'Lc 12:15':['Ec 5:10','1Tm 6:6','Hb 13:5','Sl 62:10','Pv 15:16'],
+  'Lc 15:7':['Lc 15:10','At 11:18','Is 55:7','Ez 18:23','2Pe 3:9'],
+  'Lc 18:1':['Dn 6:10','1Ts 5:17','Ef 6:18','Lc 11:1','Fp 4:6'],
+  'Lc 18:14':['Mt 5:3','Sl 51:17','Is 57:15','Tg 4:6','1Pe 5:5'],
+  'Lc 19:10':['Mt 18:11','Jo 3:17','Ez 34:16','1Tm 1:15','Is 53:6'],
+  'Lc 22:20':['Jr 31:31','1Co 11:25','Mt 26:28','Hb 9:15','Hb 12:24'],
+  // ══ JOÃO ══
+  'Jo 1:1':['Gn 1:1','Jo 1:14','Fp 2:6','Cl 1:17','Hb 1:2'],
+  'Jo 1:12':['Rm 8:15','Gl 3:26','Jo 3:3','1Jo 3:1','Ef 1:5'],
+  'Jo 1:14':['Jo 1:1','Is 7:14','Fp 2:7','Hb 2:14','1Jo 4:2'],
+  'Jo 1:29':['Is 53:6','1Pe 1:19','Ap 5:6','Jo 3:17','1Jo 2:2'],
+  'Jo 3:3':['Jo 1:12','Tt 3:5','Ez 36:26','1Pe 1:23','2Co 5:17'],
+  'Jo 3:16':['Rm 5:8','1Jo 4:9','Jo 10:28','Ef 2:8','Tt 3:4'],
+  'Jo 3:17':['Lc 19:10','Jo 12:47','Is 45:22','1Tm 1:15','Ez 18:23'],
+  'Jo 4:14':['Is 55:1','Ap 21:6','Jo 7:37','Is 12:3','Sl 42:1'],
+  'Jo 4:24':['Is 31:3','Cl 1:15','1Tm 1:17','Hb 11:6','Jo 4:23'],
+  'Jo 5:24':['Jo 3:36','1Jo 5:12','Jo 11:25','Rm 8:1','Cl 2:13'],
+  'Jo 6:35':['Jo 4:14','Is 55:1','Jo 7:37','Mt 5:6','Sl 107:9'],
+  'Jo 6:37':['Jo 10:28','Jo 17:12','Rm 8:30','Ef 1:4','Jo 6:39'],
+  'Jo 6:47':['Jo 3:36','Jo 5:24','1Jo 5:13','Hb 11:6','Jo 11:25'],
+  'Jo 7:37':['Is 55:1','Jo 4:14','Is 12:3','Sl 42:1','Ap 22:17'],
+  'Jo 8:12':['Is 9:2','Jo 9:5','Mt 5:14','Ef 5:8','1Jo 1:5'],
+  'Jo 8:32':['Jo 14:6','Sl 119:45','Tt 2:12','Rm 8:2','Gl 5:1'],
+  'Jo 8:36':['Rm 6:18','Rm 8:2','Gl 5:1','Jo 8:32','2Co 3:17'],
+  'Jo 10:9':['Jo 14:6','At 4:12','Jo 3:16','Jo 1:12','Mt 7:14'],
+  'Jo 10:10':['Jo 3:16','1Tm 6:19','Jo 6:35','Ef 3:19','Hb 11:1'],
+  'Jo 10:11':['Ez 34:11','Sl 23:1','Is 40:11','Sl 100:3','Hb 13:20'],
+  'Jo 10:28':['Jo 3:16','Jo 6:37','Rm 8:38','1Pe 1:5','Jo 17:12'],
+  'Jo 11:25':['Jo 6:40','Rm 8:11','1Co 15:22','Jo 5:24','Jo 14:6'],
+  'Jo 13:34':['Jo 15:12','Rm 12:10','1Jo 3:11','1Ts 4:9','1Pe 4:8'],
+  'Jo 14:2':['2Co 5:1','Jo 17:24','Sl 23:6','Ap 21:22','Hb 11:10'],
+  'Jo 14:6':['At 4:12','Jo 10:9','1Tm 2:5','Jo 11:25','Jo 8:12'],
+  'Jo 14:13':['Mt 7:7','Jo 15:16','Jo 16:23','Mt 21:22','Jr 29:12'],
+  'Jo 14:16':['Jo 16:7','Lc 11:13','Is 44:3','Jl 2:28','At 1:8'],
+  'Jo 14:18':['Jo 14:23','Mt 28:20','Is 41:13','Hb 13:5','Rm 8:9'],
+  'Jo 14:27':['Fp 4:7','Is 26:3','Rm 5:1','Sl 29:11','Jo 16:33'],
+  'Jo 15:5':['Jo 1:12','Fp 4:13','2Co 12:9','Jo 15:4','Ef 2:10'],
+  'Jo 15:7':['Jo 14:13','Jr 33:3','Sl 37:4','Mt 7:7','1Jo 3:22'],
+  'Jo 15:12':['Jo 13:34','Rm 12:10','1Jo 3:11','1Ts 4:9','1Pe 4:8'],
+  'Jo 15:13':['Rm 5:8','1Jo 3:16','Jo 10:11','Is 53:5','Gl 2:20'],
+  'Jo 16:33':['Jo 14:27','Rm 5:1','Sl 46:1','Is 26:3','Rm 8:37'],
+  'Jo 17:17':['Jo 8:32','Sl 119:105','Sl 119:160','Ef 5:26','1Pe 1:22'],
+  'Jo 20:29':['Hb 11:1','2Co 5:7','Rm 8:24','1Pe 1:8','Jo 17:20'],
+  // ══ ATOS ══
+  'At 1:8':['Mt 28:19','Jo 20:21','Lc 24:47','Is 43:10','Mc 16:15'],
+  'At 2:17':['Jl 2:28','Is 44:3','Ez 39:29','Zc 12:10','1Co 12:13'],
+  'At 2:38':['Mc 1:15','Mt 3:2','Rm 6:4','Gl 3:27','1Pe 3:21'],
+  'At 4:12':['Jo 14:6','Jo 10:9','Is 45:22','Rm 10:13','1Tm 2:5'],
+  'At 13:38':['Sl 32:1','Lc 24:47','Jo 8:24','1Co 15:3','Rm 10:9'],
+  'At 16:31':['Jo 3:16','Rm 10:9','Ef 2:8','At 2:38','Jo 5:24'],
+  'At 17:24':['1Rs 8:27','Is 66:1','At 7:48','2Cr 6:18','Jr 23:24'],
+  'At 17:30':['Rm 3:25','At 14:16','2Pe 3:9','Ez 18:32','1Tm 2:4'],
+  // ══ ROMANOS ══
+  'Rm 1:16':['1Co 1:18','2Tm 1:8','Mc 8:38','Rm 1:17','Hb 2:4'],
+  'Rm 1:17':['Hc 2:4','Gl 3:11','Hb 10:38','Rm 3:21','Jo 3:36'],
+  'Rm 3:23':['Sl 14:3','Ec 7:20','1Rs 8:46','Rm 5:12','Gl 3:22'],
+  'Rm 3:24':['Rm 3:23','Ef 2:8','Tt 3:5','1Co 6:11','Rm 5:1'],
+  'Rm 5:1':['Jo 14:27','Jo 16:33','Rm 3:24','Fp 4:7','Is 26:3'],
+  'Rm 5:8':['Jo 3:16','1Jo 4:10','Is 53:5','Tt 3:4','Rm 8:32'],
+  'Rm 5:12':['Gn 3:19','1Co 15:22','Rm 3:23','Ef 2:1','Cl 2:13'],
+  'Rm 6:4':['Cl 2:12','Gl 2:20','Rm 6:11','2Co 5:17','1Pe 1:23'],
+  'Rm 6:23':['Ez 18:4','Gl 6:7','Rm 3:23','Jo 3:16','1Jo 5:11'],
+  'Rm 8:1':['Jo 5:24','Jo 3:18','Rm 8:28','Is 43:25','Cl 2:14'],
+  'Rm 8:2':['Jo 8:36','Gl 5:1','2Co 3:17','Jo 8:32','Rm 7:25'],
+  'Rm 8:11':['Jo 11:25','1Co 15:22','Ef 1:20','Jo 6:40','1Pe 1:3'],
+  'Rm 8:15':['Gl 4:6','Jo 1:12','Rm 8:16','2Tm 1:7','1Jo 4:18'],
+  'Rm 8:17':['Rm 8:28','Jo 17:22','2Tm 2:12','Ap 3:21','1Pe 4:13'],
+  'Rm 8:28':['Pv 16:4','Gn 50:20','Sl 84:11','Jr 29:11','Fp 1:6'],
+  'Rm 8:31':['Sl 118:6','Is 51:12','Rm 8:1','Na 1:7','Sl 46:1'],
+  'Rm 8:32':['Jo 3:16','Rm 5:8','Jo 15:13','Is 53:5','Rm 8:28'],
+  'Rm 8:38':['Sl 118:6','Jo 10:28','Rm 8:1','Ef 1:13','1Pe 1:5'],
+  'Rm 10:9':['Jo 3:16','At 16:31','1Co 12:3','At 2:38','Jo 5:24'],
+  'Rm 10:13':['Jl 2:32','Jo 14:6','At 4:12','Rm 10:9','Sl 50:15'],
+  'Rm 12:1':['Sl 51:17','Lv 1:3','Hb 13:15','1Pe 2:5','Rm 12:2'],
+  'Rm 12:2':['Ef 4:23','Cl 3:2','1Pe 1:14','Fp 4:8','Jo 17:16'],
+  'Rm 12:10':['Jo 13:34','Hb 13:1','1Pe 1:22','1Ts 4:9','1Jo 3:11'],
+  'Rm 12:20':['Mt 5:44','Pv 25:21','Lc 6:27','Ex 23:4','Lc 23:34'],
+  'Rm 13:9':['Lv 19:18','Mt 22:39','Mc 12:31','Gl 5:14','Tg 2:8'],
+  'Rm 15:13':['Is 55:12','Ne 8:10','Sl 16:11','Jo 15:11','Gl 5:22'],
+  // ══ 1 CORÍNTIOS ══
+  '1Co 1:18':['Rm 1:16','2Tm 1:8','Is 64:6','1Co 2:14','Jo 3:16'],
+  '1Co 2:9':['Is 55:8','Is 64:4','Jo 14:2','Ap 21:4','Sl 31:19'],
+  '1Co 6:19':['1Co 3:16','2Co 6:16','Rm 8:9','Jo 14:17','Ez 36:27'],
+  '1Co 10:13':['2Pe 2:9','Jr 29:11','Pv 3:6','Sl 34:19','1Ts 5:24'],
+  '1Co 12:13':['Gl 3:28','Ef 4:4','Jl 2:28','At 2:17','1Co 12:27'],
+  '1Co 13:4':['Cl 3:14','1Pe 4:8','Rm 12:9','Jo 15:12','1Jo 4:7'],
+  '1Co 13:13':['Rm 5:5','Gl 5:6','Hb 10:22','Mt 22:37','1Jo 3:14'],
+  '1Co 15:3':['Is 53:5','Rm 4:25','Rm 5:8','Hb 9:28','1Pe 2:24'],
+  '1Co 15:20':['Jó 19:25','Jo 11:25','Rm 8:11','1Ts 4:14','1Pe 1:3'],
+  '1Co 15:22':['Rm 5:12','1Co 15:45','Jo 11:25','At 17:31','Ef 2:5'],
+  '1Co 15:54':['Is 25:8','Ap 21:4','Os 13:14','1Co 15:26','Rm 8:18'],
+  '1Co 15:58':['Gl 6:9','Ag 2:4','2Cr 15:7','Hb 12:28','1Tm 4:10'],
+  // ══ 2 CORÍNTIOS ══
+  '2Co 4:17':['Rm 8:18','Rm 8:28','Ap 21:4','1Pe 1:6','Hb 11:26'],
+  '2Co 5:7':['Hb 11:1','Jo 20:29','Rm 8:24','1Pe 1:8','2Co 4:18'],
+  '2Co 5:17':['Jo 3:3','Gl 6:15','Ez 36:26','Is 43:19','Rm 6:4'],
+  '2Co 5:21':['Is 53:9','1Pe 2:22','Hb 4:15','Is 53:11','Rm 5:8'],
+  '2Co 9:6':['Pv 11:24','Lc 6:38','Ml 3:10','Pv 3:9','Dt 28:2'],
+  '2Co 9:7':['Pv 22:9','Pv 11:24','Mt 6:2','Dt 15:7','2Co 8:2'],
+  '2Co 12:9':['Fp 4:13','Is 40:29','2Co 4:7','1Co 1:27','1Pe 5:10'],
+  // ══ GÁLATAS ══
+  'Gl 2:20':['Rm 6:4','Lc 9:23','Mc 8:34','Jo 12:26','Cl 3:3'],
+  'Gl 3:28':['1Co 12:13','Ef 4:4','Cl 3:11','Rm 10:12','Jo 17:21'],
+  'Gl 5:1':['Jo 8:36','Rm 8:2','2Co 3:17','Jo 8:32','1Pe 2:16'],
+  'Gl 5:16':['Rm 8:4','Rm 8:13','1Pe 2:11','Rm 13:14','Ef 4:22'],
+  'Gl 5:22':['Mt 7:16','Rm 15:13','Ef 5:9','Fp 4:8','Cl 3:12'],
+  'Gl 6:2':['Jo 13:34','Rm 15:1','1Co 9:22','Mt 23:4','Gl 6:5'],
+  'Gl 6:7':['Rm 6:23','Pv 22:8','Jó 4:8','Is 3:10','Os 10:13'],
+  'Gl 6:9':['1Co 15:58','Ag 2:4','2Cr 15:7','Is 40:31','Hb 12:3'],
+  // ══ EFÉSIOS ══
+  'Ef 1:4':['Jo 15:16','Rm 8:29','1Pe 1:2','2Tm 1:9','Ap 13:8'],
+  'Ef 1:7':['Cl 1:14','Hb 9:14','1Pe 1:18','Ap 5:9','Rm 3:24'],
+  'Ef 2:1':['Rm 5:12','Cl 2:13','Jo 5:24','Ez 18:4','Lc 15:24'],
+  'Ef 2:4':['Rm 5:8','1Jo 4:10','Jo 3:16','Tt 3:4','Lm 3:22'],
+  'Ef 2:8':['Rm 3:28','Gl 2:16','Tt 3:5','Fp 3:9','Jo 6:44'],
+  'Ef 2:10':['Jo 15:5','Fp 2:13','Tt 2:14','Cl 1:10','2Tm 3:17'],
+  'Ef 4:22':['Rm 6:6','Cl 3:8','1Pe 2:1','Gl 5:16','Rm 13:14'],
+  'Ef 4:25':['Zc 8:16','Cl 3:9','Rm 12:17','Pv 12:19','Ex 23:1'],
+  'Ef 4:32':['Mt 6:14','Mt 18:35','Mc 11:25','Lc 6:37','Cl 3:13'],
+  'Ef 5:18':['At 2:4','1Co 14:18','Rm 8:26','Cl 3:16','Ef 5:19'],
+  'Ef 6:10':['2Tm 2:1','1Co 16:13','Fp 4:1','Js 1:9','Is 40:31'],
+  'Ef 6:11':['Rm 13:12','2Co 10:4','1Pe 5:8','Tg 4:7','2Tm 2:3'],
+  'Ef 6:18':['Lc 18:1','1Ts 5:17','Cl 4:2','Lm 2:19','Rm 12:12'],
+  // ══ FILIPENSES ══
+  'Fp 1:6':['Rm 8:28','Sl 138:8','Jo 6:39','2Tm 1:12','1Ts 5:24'],
+  'Fp 1:21':['Sl 31:15','Sl 73:25','Gl 2:20','1Co 15:31','2Co 1:9'],
+  'Fp 2:3':['Rm 12:3','Rm 12:10','1Pe 5:5','Pv 11:2','Tg 4:10'],
+  'Fp 2:9':['Mt 28:18','Jo 17:2','Dn 7:14','Ef 1:21','At 2:36'],
+  'Fp 2:13':['Ef 2:10','Jo 15:5','1Co 12:6','2Co 3:5','1Ts 5:24'],
+  'Fp 3:13':['Is 43:18','Hb 12:1','2Co 5:17','Rm 6:4','Is 65:17'],
+  'Fp 4:4':['1Ts 5:16','Sl 100:1','Rm 12:12','Gl 5:22','Ne 8:10'],
+  'Fp 4:6':['1Pe 5:7','Mt 6:25','Sl 55:22','Hb 13:5','Mt 6:33'],
+  'Fp 4:7':['Jo 14:27','Is 26:3','Rm 5:1','Sl 29:11','Jo 16:33'],
+  'Fp 4:8':['Rm 12:2','Rm 8:5','Cl 3:2','Tg 1:17','Is 26:3'],
+  'Fp 4:11':['1Tm 6:6','Hb 13:5','Sl 131:1','Jó 1:21','Hc 3:17'],
+  'Fp 4:13':['Is 40:31','Fp 4:7','Cl 1:11','2Co 12:9','1Tm 1:12'],
+  'Fp 4:19':['Rm 8:32','Sl 23:1','Fp 4:6','Mt 6:25','Sl 84:11'],
+  // ══ COLOSSENSES ══
+  'Cl 1:16':['Gn 1:1','Jo 1:3','Hb 1:2','Ef 3:9','Ap 4:11'],
+  'Cl 1:17':['Jo 1:1','Hb 1:3','Hb 13:8','Ap 1:8','Jo 8:58'],
+  'Cl 2:6':['Rm 14:7','Gl 2:20','Fp 1:21','Jo 14:6','1Jo 2:6'],
+  'Cl 3:1':['Rm 8:5','Fp 4:8','Cl 3:2','Mt 6:33','Jo 17:24'],
+  'Cl 3:13':['Mt 6:14','Ef 4:32','Mt 18:35','Mc 11:25','Lc 6:37'],
+  'Cl 3:16':['Ef 5:18','Sl 119:11','Dt 6:7','Jo 17:17','2Tm 3:16'],
+  // ══ 1 TESSALONICENSES ══
+  '1Ts 4:13':['1Co 15:20','Jo 11:25','Rm 8:11','1Pe 1:3','Ap 14:13'],
+  '1Ts 5:16':['Fp 4:4','Rm 12:12','Sl 100:1','Ne 8:10','Hb 13:15'],
+  '1Ts 5:17':['Lc 18:1','Dn 6:10','Ef 6:18','Cl 4:2','Rm 12:12'],
+  '1Ts 5:18':['Ef 5:20','Sl 103:2','Cl 3:17','Fp 4:6','1Co 10:31'],
+  // ══ 2 TESSALONICENSES ══
+  '2Ts 3:3':['1Jo 1:9','1Co 10:13','Is 49:15','Hb 13:5','2Tm 2:13'],
+  // ══ 1 TIMÓTEO ══
+  '1Tm 2:5':['Jo 14:6','At 4:12','Rm 8:34','Hb 7:25','1Jo 2:1'],
+  '1Tm 6:6':['Hb 13:5','Sl 131:1','Fp 4:11','Pv 15:16','Ec 4:6'],
+  // ══ 2 TIMÓTEO ══
+  '2Tm 1:7':['Rm 8:15','Gl 4:6','Js 1:9','2Tm 1:14','1Jo 4:18'],
+  '2Tm 2:15':['2Tm 3:16','Js 1:8','Sl 1:2','At 17:11','Ne 8:8'],
+  '2Tm 3:16':['2Pe 1:20','Rm 15:4','2Tm 2:15','Sl 119:105','Jo 17:17'],
+  '2Tm 4:7':['1Co 9:24','Hb 12:1','Fp 3:14','Gl 2:2','At 20:24'],
+  // ══ TITO ══
+  'Tt 3:5':['Jo 3:5','Ez 36:26','Rm 12:1','1Pe 1:3','Tg 1:18'],
+  // ══ HEBREUS ══
+  'Hb 1:1':['Jo 1:1','Gl 4:4','Jr 1:1','Rm 1:2','Ez 1:3'],
+  'Hb 4:12':['Ef 6:17','Jo 12:48','Is 49:2','Ap 19:15','Jr 23:29'],
+  'Hb 4:16':['Ef 3:12','Jo 14:6','Rm 5:2','Lm 3:57','Hb 10:19'],
+  'Hb 9:14':['Jo 1:29','1Pe 1:19','Ap 5:9','1Co 6:11','Is 53:10'],
+  'Hb 10:25':['At 20:7','Mt 18:20','1Co 16:2','Sl 84:10','Ef 5:19'],
+  'Hb 11:1':['Rm 8:24','2Co 5:7','Jo 20:29','Hb 11:6','Rm 4:18'],
+  'Hb 11:6':['Hb 11:1','Rm 4:21','Mt 17:20','Jr 29:13','Sl 145:18'],
+  'Hb 12:1':['1Co 9:24','2Tm 4:7','Fp 3:14','At 20:24','Gl 5:7'],
+  'Hb 12:2':['Jo 19:30','Is 53:3','Hb 11:1','Fp 3:14','1Pe 4:13'],
+  'Hb 12:14':['Mt 5:8','1Pe 1:16','Lv 11:44','Rm 14:19','Sl 34:14'],
+  'Hb 13:5':['Dt 31:6','Js 1:5','Gn 28:15','Mt 28:20','Is 41:10'],
+  'Hb 13:8':['Ml 3:6','Tg 1:17','Sl 102:27','Jo 8:58','Ap 1:8'],
+  'Hb 13:15':['1Pe 2:5','Rm 12:1','Os 14:2','Sl 50:14','Sl 103:2'],
+  // ══ TIAGO ══
+  'Tg 1:2':['Rm 5:3','1Pe 1:6','Hb 12:11','Rm 8:28','1Pe 4:12'],
+  'Tg 1:5':['Pv 3:5','Mt 7:7','Jr 33:3','Jo 14:26','1Rs 3:9'],
+  'Tg 1:17':['Ml 3:6','Hb 13:8','Nm 23:19','Sl 102:27','Gn 1:3'],
+  'Tg 2:8':['Lv 19:18','Mt 22:39','Rm 13:9','Gl 5:14','Mc 12:31'],
+  'Tg 4:7':['1Pe 5:8','Ef 6:11','Rm 13:12','2Co 10:4','2Tm 2:3'],
+  'Tg 4:8':['Sl 24:3','Hb 10:22','1Jo 1:7','Is 1:16','Ez 36:25'],
+  // ══ 1 PEDRO ══
+  '1Pe 1:3':['Jo 3:3','Tt 3:5','Ef 2:4','Rm 8:11','1Co 15:20'],
+  '1Pe 1:16':['Lv 11:44','Lv 19:2','Hb 12:14','Mt 5:48','Lv 20:7'],
+  '1Pe 2:9':['Ex 19:5','Dt 7:6','Is 43:21','Tt 2:14','Ap 1:6'],
+  '1Pe 2:24':['Is 53:5','Is 53:4','Rm 5:8','2Co 5:21','Hb 9:28'],
+  '1Pe 5:5':['Pv 3:34','Tg 4:10','Rm 12:3','Fp 2:3','Mt 23:12'],
+  '1Pe 5:7':['Sl 55:22','Sl 37:5','Mt 6:25','Fp 4:6','Is 46:4'],
+  '1Pe 5:8':['Ef 6:11','Tg 4:7','Rm 13:12','2Co 10:4','Ap 20:2'],
+  '1Pe 5:10':['Rm 8:18','2Co 4:17','Hb 10:37','Tg 1:12','Is 40:29'],
+  // ══ 2 PEDRO ══
+  '2Pe 1:19':['Sl 119:105','Jo 1:1','Ap 22:16','Is 60:1','Ml 4:2'],
+  '2Pe 3:9':['Ez 18:32','2Pe 3:15','1Tm 2:4','At 17:30','Ez 33:11'],
+  '2Pe 3:13':['Is 65:17','Ap 21:1','Is 66:22','Rm 8:19','2Co 5:17'],
+  // ══ 1 JOÃO ══
+  '1Jo 1:7':['Hb 9:14','Ap 7:14','Tg 4:8','Is 1:18','1Jo 1:9'],
+  '1Jo 1:9':['Sl 32:5','Pv 28:13','Sl 28:13','Mq 7:18','Nm 14:18'],
+  '1Jo 3:1':['Jo 1:12','Rm 8:15','Gl 4:6','Ef 1:5','Jo 3:3'],
+  '1Jo 3:16':['Jo 15:13','Rm 5:8','Jo 10:11','Is 53:5','Gl 2:20'],
+  '1Jo 4:7':['Jo 13:34','Rm 12:10','1Co 13:4','1Ts 4:9','1Pe 4:8'],
+  '1Jo 4:8':['Jo 3:16','Rm 8:38','Jr 31:3','Ef 3:18','Is 54:10'],
+  '1Jo 4:9':['Jo 3:16','Rm 5:8','Gl 4:4','Hb 2:14','1Jo 4:10'],
+  '1Jo 4:18':['Rm 8:15','2Tm 1:7','Rm 8:38','Jo 10:28','Sl 34:4'],
+  '1Jo 5:11':['Jo 3:16','Rm 6:23','Jo 5:24','Jo 10:28','1Jo 5:13'],
+  '1Jo 5:13':['Jo 5:24','Jo 3:36','Jo 6:47','1Jo 5:11','Rm 8:1'],
+  // ══ JUDAS ══
+  'Jd 24':['1Pe 1:5','Jo 10:28','Rm 16:25','Ef 3:20','1Ts 5:23'],
+  // ══ APOCALIPSE ══
+  'Ap 1:8':['Jo 8:58','Hb 13:8','Is 41:4','Ap 22:13','Is 44:6'],
+  'Ap 3:10':['Sl 121:7','Jo 17:15','2Ts 3:3','1Pe 1:5','Jd 24'],
+  'Ap 3:20':['Mt 7:7','Lc 11:9','Jo 14:23','So 3:17','Ct 5:2'],
+  'Ap 21:1':['Is 65:17','2Pe 3:13','Is 66:22','Rm 8:19','2Co 5:17'],
+  'Ap 21:4':['Is 25:8','Is 65:19','Ap 7:17','Sl 116:15','Rm 8:18'],
+  'Ap 21:6':['Jo 7:37','Is 55:1','Jo 4:14','Is 12:3','Sl 42:1'],
+  'Ap 22:13':['Ap 1:8','Jo 8:58','Is 41:4','Is 44:6','Hb 13:8'],
+  'Ap 22:17':['Is 55:1','Jo 7:37','Jo 4:14','Ap 21:6','Mt 11:28'],
+};
+
+function _parseCrossRef(ref) {
+  const m = ref.match(/^(.+?)\s+(\d+):(\d+)$/);
+  if (!m) return null;
+  const bi = _crAbbr[m[1]];
+  if (bi === undefined) return null;
+  return { bi, ci: parseInt(m[2]) - 1, vi: parseInt(m[3]) - 1 };
+}
+function _getRefKey(bi, ci, vi) {
+  const abbr = Object.keys(_crAbbr).find(k => _crAbbr[k] === bi);
+  return abbr ? abbr + ' ' + (ci + 1) + ':' + (vi + 1) : null;
+}
+function vmCrossRef() {
+  hideVerseMenu();
+  if (selectedVerses.length === 0) { showToast('Selecione um versículo'); return; }
+  const vi = selectedVerses[0];
+  const book = bibleData[currentBook];
+  const key  = _getRefKey(currentBook, currentChapter, vi);
+  const refs = key ? (_crossRefDB[key] || []) : [];
+  document.getElementById('crossref-source').textContent =
+    (book ? book.name : '') + ' ' + (currentChapter + 1) + ':' + (vi + 1);
+  const verseText = (book && book.chapters[currentChapter]) ? book.chapters[currentChapter][vi] : '';
+  document.getElementById('crossref-source-text').textContent = verseText ? '"' + verseText + '"' : '';
+  const listEl = document.getElementById('crossref-list');
+  if (refs.length === 0) {
+    listEl.innerHTML = '<div style="padding:24px 16px;font-family:\'Lato\',sans-serif;font-size:14px;color:var(--text-muted);text-align:center;">Nenhuma referência cruzada catalogada para este versículo.</div>';
+  } else {
+    listEl.innerHTML = refs.map(r => {
+      const p = _parseCrossRef(r);
+      if (!p) return '';
+      const rb = bibleData[p.bi];
+      const rt = (rb && rb.chapters[p.ci]) ? rb.chapters[p.ci][p.vi] : '';
+      if (!rt) return '';
+      return `<div class="search-result" onclick="goToVerse(${p.bi},${p.ci},${p.vi});closePanel('crossref-panel');">
+        <div class="search-result-ref">${r}</div>
+        <div class="search-result-text">${rt}</div>
+      </div>`;
+    }).join('');
+  }
+  _clearSelection();
+  openPanel('crossref-panel');
+}
+// Começam ocultas. Aparecem ao tocar a tela.
+// Somem 1.8s depois da última interação.
+// No fim da página ficam fixas abaixo do último verso.
+let arrowHideTimer = null;
+const floatNav  = document.getElementById('float-nav');
+const contentEl = document.getElementById('content');
+
+function showArrows() {
+  clearTimeout(arrowHideTimer);
+  const atBottom = contentEl.scrollTop + contentEl.clientHeight >= contentEl.scrollHeight - 10;
+  floatNav.classList.add('arrows-visible');
+  if (atBottom) {
+    floatNav.classList.add('arrows-bottom');
+  } else {
+    floatNav.classList.remove('arrows-bottom');
+    arrowHideTimer = setTimeout(hideArrows, 1800);
+  }
+}
+
+function hideArrows() {
+  if (!floatNav.classList.contains('arrows-bottom')) {
+    floatNav.classList.remove('arrows-visible');
+  }
+}
+
+// Toque no conteúdo → mostra setas
+contentEl.addEventListener('touchstart', showArrows, { passive: true });
+contentEl.addEventListener('scroll',     showArrows, { passive: true });
+
+// Clique normal (mouse no PC)
+document.getElementById('content').addEventListener('click', e => {
+  showArrows();
+  if (!e.target.closest('.verse')) {
+    document.querySelectorAll('.verse.selected').forEach(v => v.classList.remove('selected'));
+    selectedVerses.length = 0; lastSelectedVerse = null;
+    hideVerseMenu();
+  }
+  resetReadingTimer();
+}, { capture: true });
+
+function openCredits() { document.getElementById('credits-modal').classList.add('open'); }
+function closeCredits() { document.getElementById('credits-modal').classList.remove('open'); }
+document.getElementById('credits-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('credits-modal')) closeCredits();
+});
+
+function openPanel(id)  {
+  exitReadingMode();
+  document.getElementById(id).classList.add('open');
+}
+
+function closePanel(id) { document.getElementById(id).classList.remove('open'); }
+
+function closePanelIfOutside(e, id) {
+  if (e.target.id === id) closePanel(id);
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+let touchStartX = 0;
+let touchStartY = 0;
+document.getElementById('content').addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+document.getElementById('content').addEventListener('touchend', e => {
+  const diffX = touchStartX - e.changedTouches[0].clientX;
+  const diffY = Math.abs(touchStartY - e.changedTouches[0].clientY);
+  if (Math.abs(diffX) > 80 && diffY < 40) {
+    if (isReadingMode) { exitReadingMode(); return; }
+    if (diffX > 0) nextChapter(); else prevChapter();
+  }
+}, { passive: true });
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') nextChapter();
+  if (e.key === 'ArrowLeft')  prevChapter();
+  if (e.key === 'Escape') {
+    ['search-panel','highlight-panel','settings-panel','chapter-picker',
+     'note-panel','crossref-panel','websearch-panel','history-panel','plan-panel','voice-panel','verse-picker']
+      .forEach(closePanel);
+    closeCredits();
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+    e.preventDefault(); openSearch();
+  }
+});
+
+document.body.addEventListener('touchmove', e => {
+  // Permite scroll dentro do conteúdo principal e dentro de qualquer painel aberto
+  const inContent = document.getElementById('content').contains(e.target);
+  const inPanel   = e.target.closest('.panel-overlay.open');
+  if (!inContent && !inPanel) {
+    e.preventDefault();
+  }
+}, { passive: false });
+</script>
+</body>
+</html>
